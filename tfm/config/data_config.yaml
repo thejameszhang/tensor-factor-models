@@ -1,0 +1,52 @@
+---
+dict_freq:
+  size: Y
+  value: Y
+  prof: Y
+  valprof: M
+  fscore: Y
+  debtiss: Y
+  repurch: Y
+  nissa: Y
+  accruals: Y
+  growth: Y
+  aturnover: Y
+  gmargins: Y
+  ep: Y
+  cfp: Y
+  noa: Y
+  inv: Y
+  invcap: M
+  igrowth: M
+  sgrowth: M
+  lev: Y
+  roaa: Y
+  roea: Y
+  sp: Y
+  mom: M
+  indmom: M
+  valmom: M
+  valmomprof: M
+  mom12: M
+  momrev: M
+  lrrev: M
+  valuem: M
+  nissm: M
+  roe: M
+  rome: M
+  strev: M
+  ivol: M
+  betaarb: M
+  season: M
+  indrrev: M
+  ciss: M
+  price: M
+  age: M
+  shvol: M
+
+dir_data: data/
+dir_out: organized_data/
+frac_longshort: 0.1
+max_lag: 60
+start_date_maxlag: 1972-07-01
+end_date: 2020-08-01
