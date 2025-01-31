@@ -19,14 +19,14 @@ gamma = 0
 
 LAG = 36
 
-for oos in [True, False]:
+for post2005 in [True, False]:
     for dataset in datasets:
         lst_K = [1, 2, 3, 4, 5] if dataset == 'ff' else [1, 3, 5, 10, 15, 20, 25]
-        print("OOS: ", oos, dataset)
+        print("Post 2005: ", post2005, dataset)
         # more settings
-        if oos:
+        if post2005:
             start_year = 2005
-            sample = 'oos'
+            sample = 'post-2005'
         else:
             start_year = dataset_to_start_year[dataset]
             sample = 'full'

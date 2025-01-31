@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.21)  31 JAN 2025 13:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.21)  31 JAN 2025 13:16
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -603,172 +603,168 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \tf@lof=\write6
 \openout6 = `results.lof'.
 
- (./results.lot)
-\tf@lot=\write7
-\openout7 = `results.lot'.
-
  [7] (./helpers/char_anom.tex
-<figures/full/char_anom_tensor_TFM.png, id=246, 619.3539pt x 422.7795pt>
+<figures/full/char_anom_tensor_TFM.png, id=244, 619.3539pt x 422.7795pt>
 File: figures/full/char_anom_tensor_TFM.png Graphic file (type png)
 <use figures/full/char_anom_tensor_TFM.png>
 Package pdftex.def Info: figures/full/char_anom_tensor_TFM.png  used on input line 5.
 (pdftex.def)             Requested size: 345.0pt x 235.50339pt.
-<figures/full/char_anom_tensor_Precise.png, id=248, 611.4042pt x 422.7795pt>
+<figures/full/char_anom_tensor_Precise.png, id=246, 611.4042pt x 422.7795pt>
 File: figures/full/char_anom_tensor_Precise.png Graphic file (type png)
 <use figures/full/char_anom_tensor_Precise.png>
 Package pdftex.def Info: figures/full/char_anom_tensor_Precise.png  used on input line 12.
 (pdftex.def)             Requested size: 345.0pt x 238.5741pt.
  [8 <./figures/full/char_anom_tensor_TFM.png>]
-<figures/full/char_anom_pca.png, id=254, 617.9085pt x 422.7795pt>
+<figures/full/char_anom_pca.png, id=252, 617.9085pt x 422.7795pt>
 File: figures/full/char_anom_pca.png Graphic file (type png)
 <use figures/full/char_anom_pca.png>
 Package pdftex.def Info: figures/full/char_anom_pca.png  used on input line 26.
 (pdftex.def)             Requested size: 345.0pt x 236.05173pt.
 ) [9 <./figures/full/char_anom_tensor_Precise.png> <./figures/full/char_anom_pca.png>] (./helpers/scs.tex
-<figures/full/scs_tensor_TFM.png, id=261, 611.4042pt x 422.7795pt>
+<figures/full/scs_tensor_TFM.png, id=259, 611.4042pt x 422.7795pt>
 File: figures/full/scs_tensor_TFM.png Graphic file (type png)
 <use figures/full/scs_tensor_TFM.png>
 Package pdftex.def Info: figures/full/scs_tensor_TFM.png  used on input line 5.
 (pdftex.def)             Requested size: 345.0pt x 238.5741pt.
-<figures/full/scs_tensor_Precise.png, id=262, 611.4042pt x 422.7795pt>
+<figures/full/scs_tensor_Precise.png, id=260, 611.4042pt x 422.7795pt>
 File: figures/full/scs_tensor_Precise.png Graphic file (type png)
 <use figures/full/scs_tensor_Precise.png>
 Package pdftex.def Info: figures/full/scs_tensor_Precise.png  used on input line 12.
 (pdftex.def)             Requested size: 345.0pt x 238.5741pt.
  [10 <./figures/full/scs_tensor_TFM.png>]
-<figures/full/scs_pca.png, id=268, 617.9085pt x 422.7795pt>
+<figures/full/scs_pca.png, id=266, 617.9085pt x 422.7795pt>
 File: figures/full/scs_pca.png Graphic file (type png)
 <use figures/full/scs_pca.png>
 Package pdftex.def Info: figures/full/scs_pca.png  used on input line 26.
 (pdftex.def)             Requested size: 345.0pt x 236.05173pt.
 ) (./helpers/wrds.tex
-<figures/full/wrds_tensor_TFM.png, id=269, 611.4042pt x 422.7795pt>
+<figures/full/wrds_tensor_TFM.png, id=267, 611.4042pt x 422.7795pt>
 File: figures/full/wrds_tensor_TFM.png Graphic file (type png)
 <use figures/full/wrds_tensor_TFM.png>
 Package pdftex.def Info: figures/full/wrds_tensor_TFM.png  used on input line 5.
 (pdftex.def)             Requested size: 345.0pt x 238.5741pt.
  [11 <./figures/full/scs_tensor_Precise.png> <./figures/full/scs_pca.png>]
-<figures/full/wrds_tensor_Precise.png, id=276, 617.9085pt x 422.7795pt>
+<figures/full/wrds_tensor_Precise.png, id=274, 617.9085pt x 422.7795pt>
 File: figures/full/wrds_tensor_Precise.png Graphic file (type png)
 <use figures/full/wrds_tensor_Precise.png>
 Package pdftex.def Info: figures/full/wrds_tensor_Precise.png  used on input line 12.
 (pdftex.def)             Requested size: 345.0pt x 236.05173pt.
  [12 <./figures/full/wrds_tensor_TFM.png>]
-<figures/full/wrds_pca.png, id=282, 611.4042pt x 422.7795pt>
+<figures/full/wrds_pca.png, id=280, 611.4042pt x 422.7795pt>
 File: figures/full/wrds_pca.png Graphic file (type png)
 <use figures/full/wrds_pca.png>
 Package pdftex.def Info: figures/full/wrds_pca.png  used on input line 26.
 (pdftex.def)             Requested size: 345.0pt x 238.5741pt.
 ) (./helpers/ff.tex
-<figures/full/ff_tensor_TFM.png, id=283, 611.4042pt x 422.7795pt>
+<figures/full/ff_tensor_TFM.png, id=281, 611.4042pt x 422.7795pt>
 File: figures/full/ff_tensor_TFM.png Graphic file (type png)
 <use figures/full/ff_tensor_TFM.png>
 Package pdftex.def Info: figures/full/ff_tensor_TFM.png  used on input line 5.
 (pdftex.def)             Requested size: 345.0pt x 238.5741pt.
  [13 <./figures/full/wrds_tensor_Precise.png> <./figures/full/wrds_pca.png>]
-<figures/full/ff_tensor_Precise.png, id=291, 619.3539pt x 422.7795pt>
+<figures/full/ff_tensor_Precise.png, id=289, 619.3539pt x 422.7795pt>
 File: figures/full/ff_tensor_Precise.png Graphic file (type png)
 <use figures/full/ff_tensor_Precise.png>
 Package pdftex.def Info: figures/full/ff_tensor_Precise.png  used on input line 12.
 (pdftex.def)             Requested size: 345.0pt x 235.50339pt.
  [14 <./figures/full/ff_tensor_TFM.png>]
-<figures/full/ff_pca.png, id=297, 619.3539pt x 422.7795pt>
+<figures/full/ff_pca.png, id=295, 619.3539pt x 422.7795pt>
 File: figures/full/ff_pca.png Graphic file (type png)
 <use figures/full/ff_pca.png>
 Package pdftex.def Info: figures/full/ff_pca.png  used on input line 26.
 (pdftex.def)             Requested size: 345.0pt x 235.50339pt.
 ) [15 <./figures/full/ff_tensor_Precise.png> <./figures/full/ff_pca.png>] (./helpers/char_anom_oos.tex
-<figures/oos/char_anom_tensor_TFM.png, id=304, 619.3539pt x 422.7795pt>
-File: figures/oos/char_anom_tensor_TFM.png Graphic file (type png)
-<use figures/oos/char_anom_tensor_TFM.png>
-Package pdftex.def Info: figures/oos/char_anom_tensor_TFM.png  used on input line 5.
+<figures/post-2005/char_anom_tensor_TFM.png, id=302, 619.3539pt x 422.7795pt>
+File: figures/post-2005/char_anom_tensor_TFM.png Graphic file (type png)
+<use figures/post-2005/char_anom_tensor_TFM.png>
+Package pdftex.def Info: figures/post-2005/char_anom_tensor_TFM.png  used on input line 5.
 (pdftex.def)             Requested size: 345.0pt x 235.50339pt.
-<figures/oos/char_anom_tensor_Precise.png, id=305, 619.3539pt x 422.7795pt>
-File: figures/oos/char_anom_tensor_Precise.png Graphic file (type png)
-<use figures/oos/char_anom_tensor_Precise.png>
-Package pdftex.def Info: figures/oos/char_anom_tensor_Precise.png  used on input line 12.
+<figures/post-2005/char_anom_tensor_Precise.png, id=303, 619.3539pt x 422.7795pt>
+File: figures/post-2005/char_anom_tensor_Precise.png Graphic file (type png)
+<use figures/post-2005/char_anom_tensor_Precise.png>
+Package pdftex.def Info: figures/post-2005/char_anom_tensor_Precise.png  used on input line 12.
 (pdftex.def)             Requested size: 345.0pt x 235.50339pt.
- [16 <./figures/oos/char_anom_tensor_TFM.png>]
-<figures/oos/char_anom_pca.png, id=312, 619.3539pt x 422.7795pt>
-File: figures/oos/char_anom_pca.png Graphic file (type png)
-<use figures/oos/char_anom_pca.png>
-Package pdftex.def Info: figures/oos/char_anom_pca.png  used on input line 26.
+ [16 <./figures/post-2005/char_anom_tensor_TFM.png>]
+<figures/post-2005/char_anom_pca.png, id=310, 619.3539pt x 422.7795pt>
+File: figures/post-2005/char_anom_pca.png Graphic file (type png)
+<use figures/post-2005/char_anom_pca.png>
+Package pdftex.def Info: figures/post-2005/char_anom_pca.png  used on input line 26.
 (pdftex.def)             Requested size: 345.0pt x 235.50339pt.
 ) (./helpers/scs_oos.tex
-<figures/oos/scs_tensor_TFM.png, id=313, 611.4042pt x 422.7795pt>
-File: figures/oos/scs_tensor_TFM.png Graphic file (type png)
-<use figures/oos/scs_tensor_TFM.png>
-Package pdftex.def Info: figures/oos/scs_tensor_TFM.png  used on input line 5.
+<figures/post-2005/scs_tensor_TFM.png, id=311, 611.4042pt x 422.7795pt>
+File: figures/post-2005/scs_tensor_TFM.png Graphic file (type png)
+<use figures/post-2005/scs_tensor_TFM.png>
+Package pdftex.def Info: figures/post-2005/scs_tensor_TFM.png  used on input line 5.
 (pdftex.def)             Requested size: 345.0pt x 238.5741pt.
- [17 <./figures/oos/char_anom_tensor_Precise.png> <./figures/oos/char_anom_pca.png>]
-<figures/oos/scs_tensor_Precise.png, id=320, 619.3539pt x 422.7795pt>
-File: figures/oos/scs_tensor_Precise.png Graphic file (type png)
-<use figures/oos/scs_tensor_Precise.png>
-Package pdftex.def Info: figures/oos/scs_tensor_Precise.png  used on input line 12.
+ [17 <./figures/post-2005/char_anom_tensor_Precise.png> <./figures/post-2005/char_anom_pca.png>]
+<figures/post-2005/scs_tensor_Precise.png, id=318, 619.3539pt x 422.7795pt>
+File: figures/post-2005/scs_tensor_Precise.png Graphic file (type png)
+<use figures/post-2005/scs_tensor_Precise.png>
+Package pdftex.def Info: figures/post-2005/scs_tensor_Precise.png  used on input line 12.
 (pdftex.def)             Requested size: 345.0pt x 235.50339pt.
- [18 <./figures/oos/scs_tensor_TFM.png>]
-<figures/oos/scs_pca.png, id=326, 611.4042pt x 422.7795pt>
-File: figures/oos/scs_pca.png Graphic file (type png)
-<use figures/oos/scs_pca.png>
-Package pdftex.def Info: figures/oos/scs_pca.png  used on input line 26.
+ [18 <./figures/post-2005/scs_tensor_TFM.png>]
+<figures/post-2005/scs_pca.png, id=324, 611.4042pt x 422.7795pt>
+File: figures/post-2005/scs_pca.png Graphic file (type png)
+<use figures/post-2005/scs_pca.png>
+Package pdftex.def Info: figures/post-2005/scs_pca.png  used on input line 26.
 (pdftex.def)             Requested size: 345.0pt x 238.5741pt.
 ) (./helpers/wrds_oos.tex
-<figures/oos/wrds_tensor_TFM.png, id=327, 617.9085pt x 422.7795pt>
-File: figures/oos/wrds_tensor_TFM.png Graphic file (type png)
-<use figures/oos/wrds_tensor_TFM.png>
-Package pdftex.def Info: figures/oos/wrds_tensor_TFM.png  used on input line 5.
+<figures/post-2005/wrds_tensor_TFM.png, id=325, 617.9085pt x 422.7795pt>
+File: figures/post-2005/wrds_tensor_TFM.png Graphic file (type png)
+<use figures/post-2005/wrds_tensor_TFM.png>
+Package pdftex.def Info: figures/post-2005/wrds_tensor_TFM.png  used on input line 5.
 (pdftex.def)             Requested size: 345.0pt x 236.05173pt.
- [19 <./figures/oos/scs_tensor_Precise.png> <./figures/oos/scs_pca.png>]
-<figures/oos/wrds_tensor_Precise.png, id=335, 625.8582pt x 422.7795pt>
-File: figures/oos/wrds_tensor_Precise.png Graphic file (type png)
-<use figures/oos/wrds_tensor_Precise.png>
-Package pdftex.def Info: figures/oos/wrds_tensor_Precise.png  used on input line 12.
+ [19 <./figures/post-2005/scs_tensor_Precise.png> <./figures/post-2005/scs_pca.png>]
+<figures/post-2005/wrds_tensor_Precise.png, id=333, 625.8582pt x 422.7795pt>
+File: figures/post-2005/wrds_tensor_Precise.png Graphic file (type png)
+<use figures/post-2005/wrds_tensor_Precise.png>
+Package pdftex.def Info: figures/post-2005/wrds_tensor_Precise.png  used on input line 12.
 (pdftex.def)             Requested size: 345.0pt x 233.05843pt.
- [20 <./figures/oos/wrds_tensor_TFM.png>]
-<figures/oos/wrds_pca.png, id=341, 617.9085pt x 422.7795pt>
-File: figures/oos/wrds_pca.png Graphic file (type png)
-<use figures/oos/wrds_pca.png>
-Package pdftex.def Info: figures/oos/wrds_pca.png  used on input line 26.
+ [20 <./figures/post-2005/wrds_tensor_TFM.png>]
+<figures/post-2005/wrds_pca.png, id=339, 617.9085pt x 422.7795pt>
+File: figures/post-2005/wrds_pca.png Graphic file (type png)
+<use figures/post-2005/wrds_pca.png>
+Package pdftex.def Info: figures/post-2005/wrds_pca.png  used on input line 26.
 (pdftex.def)             Requested size: 345.0pt x 236.05173pt.
 ) (./helpers/ff_oos.tex
-<figures/oos/ff_tensor_TFM.png, id=342, 611.4042pt x 422.7795pt>
-File: figures/oos/ff_tensor_TFM.png Graphic file (type png)
-<use figures/oos/ff_tensor_TFM.png>
-Package pdftex.def Info: figures/oos/ff_tensor_TFM.png  used on input line 5.
+<figures/post-2005/ff_tensor_TFM.png, id=340, 611.4042pt x 422.7795pt>
+File: figures/post-2005/ff_tensor_TFM.png Graphic file (type png)
+<use figures/post-2005/ff_tensor_TFM.png>
+Package pdftex.def Info: figures/post-2005/ff_tensor_TFM.png  used on input line 5.
 (pdftex.def)             Requested size: 345.0pt x 238.5741pt.
- [21 <./figures/oos/wrds_tensor_Precise.png> <./figures/oos/wrds_pca.png>]
-<figures/oos/ff_tensor_Precise.png, id=349, 619.3539pt x 422.7795pt>
-File: figures/oos/ff_tensor_Precise.png Graphic file (type png)
-<use figures/oos/ff_tensor_Precise.png>
-Package pdftex.def Info: figures/oos/ff_tensor_Precise.png  used on input line 11.
+ [21 <./figures/post-2005/wrds_tensor_Precise.png> <./figures/post-2005/wrds_pca.png>]
+<figures/post-2005/ff_tensor_Precise.png, id=347, 619.3539pt x 422.7795pt>
+File: figures/post-2005/ff_tensor_Precise.png Graphic file (type png)
+<use figures/post-2005/ff_tensor_Precise.png>
+Package pdftex.def Info: figures/post-2005/ff_tensor_Precise.png  used on input line 11.
 (pdftex.def)             Requested size: 345.0pt x 235.50339pt.
- [22 <./figures/oos/ff_tensor_TFM.png>]
-<figures/oos/ff_pca.png, id=355, 619.3539pt x 422.7795pt>
-File: figures/oos/ff_pca.png Graphic file (type png)
-<use figures/oos/ff_pca.png>
-Package pdftex.def Info: figures/oos/ff_pca.png  used on input line 24.
+ [22 <./figures/post-2005/ff_tensor_TFM.png>]
+<figures/post-2005/ff_pca.png, id=353, 619.3539pt x 422.7795pt>
+File: figures/post-2005/ff_pca.png Graphic file (type png)
+<use figures/post-2005/ff_pca.png>
+Package pdftex.def Info: figures/post-2005/ff_pca.png  used on input line 24.
 (pdftex.def)             Requested size: 345.0pt x 235.50339pt.
-) [23 <./figures/oos/ff_tensor_Precise.png> <./figures/oos/ff_pca.png>] (./proofs.tex [24]) [25] (./results.aux)
+) [23 <./figures/post-2005/ff_tensor_Precise.png> <./figures/post-2005/ff_pca.png>] (./proofs.tex [24]) [25] (./results.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `results.out' has not changed.
-(rerunfilecheck)             Checksum: 1431AC6F40B80A2E6337132953D2342B;4317.
+(rerunfilecheck)             Checksum: 3BBF2CD2B39C6B1D8CD317FE79E203FB;4397.
  ) 
 Here is how much of TeX's memory you used:
- 32211 strings out of 474222
- 765556 string characters out of 5748733
+ 32203 strings out of 474222
+ 766173 string characters out of 5748733
  1937975 words of memory out of 5000000
- 53845 multiletter control sequences out of 15000+600000
+ 53841 multiletter control sequences out of 15000+600000
  566613 words of font info for 69 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  114i,20n,121p,780b,666s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on results.pdf (25 pages, 2008348 bytes).
+Output written on results.pdf (25 pages, 2008488 bytes).
 PDF statistics:
- 471 PDF objects out of 1000 (max. 8388607)
- 358 compressed objects within 4 object streams
- 95 named destinations out of 1000 (max. 500000)
+ 469 PDF objects out of 1000 (max. 8388607)
+ 356 compressed objects within 4 object streams
+ 94 named destinations out of 1000 (max. 500000)
  309 words of extra memory for PDF output out of 10000 (max. 10000000)
 
