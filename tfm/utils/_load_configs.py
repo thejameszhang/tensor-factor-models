@@ -25,12 +25,12 @@ def load_yaml_config(sn):
 start_date_oos = pd.to_datetime('2005-01-01')
 config = os.environ.get('CONFIG')
 
-if config in ('char_anom', 'scs', 'wrds'):
+if config in ('char_anom', 'scs', 'wrds', 'ff'):
     mp = load_yaml_config(config)
     idx_ver, intercept_constr, normalize_ret, input_type, spec, max_lag, dir_input = mp.values()
     fit_rx = False if input_type == 'ret' else True
 else:
-    warnings.warn('The provided dataset should be one of: char_anom, scs, or wrds.')
+    warnings.warn('The provided dataset should be one of: char_anom, scs, wrds, or ff.')
     import sys
     sys.exit(0)
 

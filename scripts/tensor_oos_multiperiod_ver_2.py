@@ -1,11 +1,12 @@
 """
 ========================================================================================================================
 Example usage: 
-python3 oos_multiperiod_ver_1.py --dataset scs
-python3 tensor_oos_multiperiod_ver_2.py --dataset scs --lst_window_size=60,120,240,360 --lst_K=1,3,5,10,20,25
-python3 tensor_oos_multiperiod_ver_2.py --dataset scs --lst_window_size=120 --lst_K=1,3,5,10,12 --lst_lags=12,24,36,60 --freq=M --max_horizon=12
-python3 tensor_oos_multiperiod_ver_2.py --dataset scs --lst_window_size=120 --lst_K=1,3,5,10,15,20,25 --lst_lags=36,60,90,120 --freq=M --max_horizon=36 --max_lag=120
-python3 tensor_oos_multiperiod_ver_2.py --dataset scs --lst_window_size=120 --lst_K=1,3,5,10,15,20,25 --lst_lags=36,60,90,120 --max_horizon=36 --max_lag=120 --start='01-2005'
+python3 oos_multiperiod_ver_1.py --dataset=scs
+python3 tensor_oos_multiperiod_ver_2.py --dataset=scs --lst_window_size=60,120,240,360 --lst_K=1,3,5,10,20,25
+python3 tensor_oos_multiperiod_ver_2.py --dataset=scs --lst_window_size=120 --lst_K=1,3,5,10,12 --lst_lags=12,24,36,60 --freq=M --max_horizon=12
+python3 tensor_oos_multiperiod_ver_2.py --dataset=scs --lst_window_size=120 --lst_K=1,3,5,10,15,20,25 --lst_lags=36,60,90,120 --freq=M --max_horizon=36 --max_lag=120
+python3 tensor_oos_multiperiod_ver_2.py --dataset=scs --lst_window_size=120 --lst_K=1,3,5,10,15,20,25 --lst_lags=36,60,90,120 --max_horizon=36 --max_lag=120 --start='01-2005'
+python3 tensor_oos_multiperiod_ver_2.py --dataset=ff --lst_window_size=120 --lst_K=1,2,3,4,5 --lst_lags=36,60,90,120 --max_horizon=36 --max_lag=120 --start='01-2005'
 ========================================================================================================================
 
 Author: James Zhang
@@ -16,7 +17,7 @@ import os
 import pprint
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('--dataset', type=str, default='scs', help='char_anom, scs, wrds' )
+parser.add_argument('--dataset', type=str, default='scs', help='char_anom, scs, wrds, ff' )
 parser.add_argument('--lst_K', type=str, default='1,3,5,10,20',
     help='number of factors separated by ","' )
 parser.add_argument('--lst_window_size', type=str, default='60,120,240',
@@ -26,6 +27,7 @@ parser.add_argument('--max_horizon', type=int, default=36,
 parser.add_argument('--max_lag', type=int, default=60, help='max lag' )
 parser.add_argument('--lst_lags', type=str, default='12,24,36,60')
 parser.add_argument('--start', type=str, default='default')
+parser.add_argument('--save_W', type=int, default=0)
 args = parser.parse_args()
 pp = pprint.PrettyPrinter(indent=4)
 pp.pprint(args)
@@ -36,7 +38,7 @@ pp.pprint(args)
 #                        lst_window_size='60,120', max_horizon=36)
 
 config = args.dataset
-assert args.dataset in ('char_anom', 'wrds', 'scs')
+assert args.dataset in ('char_anom', 'wrds', 'scs', 'ff')
 os.environ['CONFIG'] = config
 
 import jax
@@ -64,6 +66,10 @@ lst_lags=[int(x) for x in args.lst_lags.split(',')]
 # l1, l2, l3, l4 = lst_lags
 max_horizon = args.max_horizon
 start = args.start
+save_W = args.save_W
+assert save_W in (0, 1), "Incorrect save_W value"
+if save_W:
+    assert len(lst_lags) == 1 and lst_lags[0] == 36
 
 # Read tensor data and parameters
 X = jnp.load(f'{dir_input}/mat_ptf_re_lag_{max_lag}.npz')['mat_ptf_re_rank'] # dim: (T, max_lag, num_ptf)
@@ -73,11 +79,11 @@ assert params['max_lag'] == max_lag == args.max_lag
 
 if config == 'char_anom':
     bin_labels, _, _, max_lag, frac_longshort, all_dates, start_date_maxlag = params.values()
-elif config == 'wrds' or config == 'scs':
+else:
     bin_labels, all_dates = params['lst_char'], params['all_dates']
 
 # FIX WINDOW SIZE, NOW TRYING WITH VARYING LAGS
-window_size = 240
+window_size = 120
 # start_date_oos parameter can be changed in the _load_configs.py file
 dates = all_dates[-len(all_dates[all_dates >= start_date_oos]) - window_size:] if start != 'default' else all_dates
 start_year = str(dates[window_size])[:4]
@@ -85,7 +91,7 @@ start_year = str(dates[window_size])[:4]
 assert not jnp.isnan(X).any()
 X_log = jnp.log(1 + X)[-len(dates):]
 
-dict_tensor_oos = {"TFM": {}, "Naive": {}}
+dict_tensor_oos = {"TFM": {}, "Naive": {}, "W": {}} # dict_tensor_oos["W"][K] = shape (T, lag, K)
 in_axes = (None, 0, None, None, None, None)
 Tensor_Multiperiod = jax.vmap(Tensor_Multiperiod_Unmapped_Monthly, in_axes=in_axes)
 lag_to_chunk = {90: 150, 120: 100}
@@ -99,7 +105,13 @@ for lag in lst_lags:
     for K in lst_K: # can i speed this up using jax.lax.scan?
         if K <= lag:
             print(f"Window size = {window_size}, Lag = {lag}, K = {K}")
-            if config == 'wrds' and lag in lag_to_chunk:
+            if lag == 36 and save_W:
+                Tensor_Save_W = jax.vmap(Tensor_Multiperiod_Unmapped_Monthly, in_axes=in_axes + (None,))
+                model, naive, W = Tensor_Save_W(X_log[:, :lag, :], jnp.arange(ub), K, window_size, lag, max_horizon, save_W) # dim: (num_windows, args.max_horizon)
+                tfm_oos_lst.append(jnp.expand_dims(model, axis=-1))
+                naive_oos_lst.append(jnp.expand_dims(naive, axis=-1))
+                dict_tensor_oos['W'][K] = W
+            elif config == 'wrds' and lag in lag_to_chunk:
                 model_chunks, naive_chunks = [], []
                 for i in range(0, ub, lag_to_chunk[lag]):
                     model, naive = Tensor_Multiperiod(X_log[:, :lag, :], jnp.arange(i, min(lag_to_chunk[lag], ub)), K, window_size, lag, max_horizon) # dim: (num_windows, args.max_horizon)
@@ -108,9 +120,9 @@ for lag in lst_lags:
                 tfm_oos_lst.append(jnp.concatenate(model_chunks, axis=0)[..., None])
                 naive_oos_lst.append(jnp.concatenate(naive_chunks, axis=0)[..., None])
             else:
-                x = Tensor_Multiperiod(X_log[:, :lag, :], jnp.arange(ub), K, window_size, lag, max_horizon) # dim: (num_windows, args.max_horizon)
-                tfm_oos_lst.append(jnp.expand_dims(x[0], axis=-1))
-                naive_oos_lst.append(jnp.expand_dims(x[1], axis=-1))
+                model, naive = Tensor_Multiperiod(X_log[:, :lag, :], jnp.arange(ub), K, window_size, lag, max_horizon) # dim: (num_windows, args.max_horizon)
+                tfm_oos_lst.append(jnp.expand_dims(model, axis=-1))
+                naive_oos_lst.append(jnp.expand_dims(naive, axis=-1))
             pbar.update(1)
 
     # Stores results
@@ -119,13 +131,21 @@ for lag in lst_lags:
 
 
 # Output directory
-dir_out = f'../results_oos/multiperiod/{config}/fig_oos_{input_type}_{spec}_ver{idx_ver}/'
+dir_out = f'../results_oos/multiperiod/{config}/tensor_fig_oos_{input_type}_{spec}_ver{idx_ver}/'
 if not os.path.exists(dir_out):
     os.makedirs(dir_out)
 
 # Save returns output
-with open(dir_out + f'{window_size}_dict_tensor_oos_{start_year}.pkl', 'wb') as handle:
-    pickle.dump(dict_tensor_oos, handle, protocol=pickle.HIGHEST_PROTOCOL)
+if save_W:
+    with open(dir_out + f'W_{start_year}.pkl', 'wb') as handle:
+        pickle.dump(dict_tensor_oos, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+        import sys
+        sys.exit(0)
+else:
+    with open(dir_out + f'dict_tensor_oos_{start_year}.pkl', 'wb') as handle:
+        pickle.dump(dict_tensor_oos, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
 
 for method in ["TFM", "Naive"]:
     # Create a figure with two subplots side by side
@@ -136,5 +156,5 @@ for method in ["TFM", "Naive"]:
         start_date, end_date = str(dates[window_size])[:10], str(dates[-max_horizon - 1])[:10]
         plot2x2(sr, lst_K, max_horizon, method, window_size, lag, x, y, fig, axes, start_date, end_date)
 
-    filename = f'{window_size}_multiperiod_ver{idx_ver}_Horizon{max_horizon}_{start_date}_{method}'
+    filename = f'multiperiod_ver{idx_ver}_Horizon{max_horizon}_{start_date}_{method}'
     fig.savefig(f'{dir_out}{filename}', bbox_inches='tight')

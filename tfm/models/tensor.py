@@ -10,13 +10,14 @@ from tfm.utils._tensor import *
 from tfm.utils._constants import *
 from tfm.utils._cov import newey_west_cov_jax
 
-@partial(jax.jit, backend=main_compute_device, static_argnums=(2, 3, 4, 5, 6, 7, 8))
+@partial(jax.jit, backend=main_compute_device, static_argnums=(2, 3, 4, 5, 6, 7, 8, 9))
 def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray, 
                                 idx_window: int, 
                                 K: int, 
                                 window_size: int,
                                 lag: int,
                                 max_horizon: int,
+                                save_W: bool = False,
                                 random_seed: int = 100,
                                 n_iter_max: int = 100, 
                                 use_newey_west: bool = False):
@@ -69,6 +70,9 @@ def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray,
     mv_naive = jax.vmap(get_mv_weights, in_axes=(None, None, None, 0))(mu_naive, var_naive, K, jnp.arange(max_horizon)) # dim: (max_horizon, K)
     ret_naive = (FW_next * mv_naive).sum(axis=1) # dim: (max_horizon)
 
+    if save_W:
+        return ret_tfm, ret_naive, W
+    
     return ret_tfm, ret_naive
 
 

@@ -159,19 +159,20 @@ def normalize_factors(factors: Dict[str, jnp.ndarray], reorder: bool = True) -> 
         'S': new_S
     }
 
-@partial(jax.jit, static_argnums=(2,))
+@partial(jax.jit, static_argnums=(2))
 def update_factor_fixed_intercept(tensor: jnp.ndarray, factors: List[jnp.ndarray], mode: int, weights: jnp.ndarray) -> jnp.ndarray:
     """Update factor matrix while keeping first column fixed to ones."""
     # Get regular update
     updated_factor = update_factor(tensor, factors, mode, weights)
     
     # Fix first column to ones (not normalized)
-    updated_factor = updated_factor.at[:, 0].set(1.0)
+    # updated_factor = updated_factor.at[:, 0].set(1.0) # is this right? shouldn't it be .at[0, :] if W is LxK
+    updated_factor = updated_factor.at[0, :].set(1.0)
     
     # Let normalization happen later if needed
     return updated_factor
 
-@partial(jax.jit, static_argnums=(2,))
+@partial(jax.jit, static_argnums=(2))
 def update_factor(tensor: jnp.ndarray, factors: List[jnp.ndarray], mode: int, weights: jnp.ndarray) -> jnp.ndarray:
     """Update factor matrix using ALS with improved numerical stability."""
     other_factors = [f for i, f in enumerate(factors) if i != mode]

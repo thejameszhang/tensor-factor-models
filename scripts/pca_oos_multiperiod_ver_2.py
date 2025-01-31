@@ -2,6 +2,7 @@
 ========================================================================================================================
 Example usage: 
 python3 pca_oos_multiperiod_ver_2.py --dataset=scs --lst_window_size=120 --lst_K=1,3,5,10,15,20,25 --max_horizon=36 --max_lag=120 --start='01-2005'
+python3 pca_oos_multiperiod_ver_2.py --dataset=ff --lst_window_size=120 --lst_K=1,2,3,4,5 --max_horizon=36 --max_lag=120 --start='01-2005'
 ========================================================================================================================
 
 Author: James Zhang
@@ -12,7 +13,7 @@ import os
 import pprint
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('--dataset', type=str, default='scs', help='char_anom, scs, wrds' )
+parser.add_argument('--dataset', type=str, default='scs', help='char_anom, scs, wrds, ff' )
 parser.add_argument('--lst_K', type=str, default='1,3,5,10,20',
     help='number of factors separated by ","' )
 parser.add_argument('--lst_window_size', type=str, default='60,120,240',
@@ -33,13 +34,13 @@ pp.pprint(args)
 #                        lst_window_size='60,120', max_horizon=36)
 
 config = args.dataset
-assert args.dataset in ('char_anom', 'wrds', 'scs')
+assert args.dataset in ('char_anom', 'wrds', 'scs', 'ff')
 os.environ['CONFIG'] = config
 
 import jax
 import jax.numpy as jnp
 jax.config.update("jax_enable_x64", True)
-os.environ['CUDA_VISIBLE_DEVICES'] = "0" # 1 means Titan and FP64 mode, 
+os.environ['CUDA_VISIBLE_DEVICES'] = "1" # 1 means Titan and FP64 mode, 
 jax.config.update('jax_platform_name', 'gpu')
 print("JAX is using device:", jax.devices()[0], jax.devices())
 
@@ -71,7 +72,7 @@ assert params['max_lag'] == max_lag == args.max_lag
 
 if config == 'char_anom':
     bin_labels, _, _, max_lag, frac_longshort, all_dates, start_date_maxlag = params.values()
-elif config == 'wrds' or config == 'scs':
+else:
     bin_labels, all_dates = params['lst_char'], params['all_dates']
 
 # FIX WINDOW SIZE, NOW TRYING WITH VARYING LAGS
@@ -152,15 +153,3 @@ for gamma, (x, y) in zip(lst_gamma, [(0, 0), (0, 1), (1, 0), (1, 1)]):
 
 filename = f'multiperiod_ver{idx_ver}_Horizon{max_horizon}_{start_date}_{gamma}'
 fig.savefig(f'{dir_out}{filename}', bbox_inches='tight')
-
-# for method in ["PCA", "RPPCA"]:
-#     # Create a figure with two subplots side by side
-#     fig, axes = plt.subplots(2, 2, figsize=(14, 12))
-#     fig.suptitle(f'{config.upper()} Multiperiod Results', fontsize=14)
-#     for lag, (x, y) in zip(lst_lags, [(0, 0), (0, 1), (1, 0), (1, 1)]):
-#         sr = dict_pca_oos[method][lag].mean(axis=0) / dict_pca_oos[method][lag].std(axis=0)
-#         start_date, end_date = str(dates[window_size])[:10], str(dates[-max_horizon - 1])[:10]
-#         plot2x2(sr, lst_K, max_horizon, method, window_size, lag, x, y, fig, axes, start_date, end_date)
-
-#     filename = f'multiperiod_ver{idx_ver}_Horizon{max_horizon}_{start_date}_{method}'
-#     fig.savefig(f'{dir_out}{filename}', bbox_inches='tight')

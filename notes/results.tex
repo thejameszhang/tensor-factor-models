@@ -15,9 +15,15 @@
 \newcommand{\Z}{{\mathbb Z}}
 \usepackage{hyperref}
 \usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{colortbl}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{note}{Note}[section]
 
 % Redefine the format for figure captions
 \captionsetup[figure]{
@@ -37,20 +43,6 @@
 \tableofcontents
 
 \newpage
-
-\section*{Updates}
-\begin{itemize}
-    \item Small things like annualizing of Sharpe ratios in graphs, removing industry and constant factors in datasets
-    \item Implemented formulas in the paper for mean and covariance matrix of basis assets in our primary tensor approach, results significantly improved
-    \item Implemented benchmark models (precise tensor approach, pooled PCA approach, multiperiod (aggregate) PCA)
-    \item Incorporating daily data into this framework proved a little bit cumbersome $\implies$ did not 
-    provide much more performance improvement.
-    \item To-Do: a plausible explanation is due to the data imputation, which could help uncover patterns in the data. Specifically, these patterns may be driven by stocks with missing observations, perhaps because market participants trading these strategies
-    only arbitraged away mispricing in stocks for which data was readily available. We should investigate this further at some point. TL;DR - results for OOS Characteristic Anomalies are unsatisfactory, 
-    and overall, Full-Sample + OOS PooledPCA and OOS Multiperiod PCA WRDS results are interesting, how much imputation here?
-    \item To-Do: experiment with the mean-variance procedure (SCS, RP-PCA) as right now we are currently using the Markowitz formula with $0$ regularization
-    \item To-Do: implement T-FF6 and compare to FF6?
-\end{itemize}
 
 \section{Setup}
 
@@ -105,19 +97,19 @@ or in tensor notation
 For clarity, let us denote the original returns $R$ simply put as assets or returns and the $K$ latent factors as the basis assets or factors. From here, for an $S$-period investment, 
 we can compute the vector of multihorizon basis asset means and covariance matrix using the formulas in the paper, 
 \begin{align}
-    \mu^{F, S} &= \left( \sum_{l=1}^S W_l \right) * \E_t [F_t] \in \mathbb{R}^K \\
-    \Sigma^{F, S} &= \left( \sum_{l=1}^S W_l W_l^\top\right) * \text{Var}_t(F_t) \in \mathbb{R}^{K \times K} \label{cov}
+    \mu^{F, S} &= \left( \sum_{l=1}^S W_l \right) \cdot \E_t [F_t] \in \mathbb{R}^K \\
+    \Sigma^{F, S} &= \left( \sum_{l=1}^S W_l W_l^\top\right) \cdot \text{Var}_t(F_t) \in \mathbb{R}^{K \times K} \label{cov}
 \end{align}
 where $*$ represents element-wise multiplication. Importantly, we assume that basis asset returns are uncorrelated over time, which is an 
 empirically reasonable assumption. SDF weights are constructed using the simple Markowitz formula
 \begin{align}
-    w^S = \left(\Sigma^{F, S} \right)^{-1} \mu^{F, S} = \left( \left( \sum_{l=1}^S W_l W_l^\top\right) * \text{Var}_t(F_t) \right)^{-1} \text{diag}\left(\sum_{l=1}^S W_k \right) \mathbb{E}_t [F_t]
+    w^S = \left(\Sigma^{F, S} \right)^{-1} \mu^{F, S} = \left( \left( \sum_{l=1}^S W_l W_l^\top\right) \cdot \text{Var}_t(F_t) \right)^{-1} \text{diag}\left(\sum_{l=1}^S W_k \right) \mathbb{E}_t [F_t]
 \end{align}
 
 To test our estimators, $\forall \ s \in [1, S]$ ie. for each of the next $S$ months, we solve the regression
-\[F_{t+s} \left( \lambda * (W \odot B)\right)^\top = R_{t+s}\]
+\[F_{t+s} \left( \lambda \cdot (W \odot B)\right)^\top = R_{t+s}\]
 \begin{align}
-    F_{t+s} = \text{flat}(R_{t+s}) ((\lambda * (W \odot B))^\top)^\dagger \in \mathbb{R}^{K} \label{F-OOS}
+    F_{t+s} = \text{flat}(R_{t+s}) ((\lambda \cdot (W \odot B))^\top)^\dagger \in \mathbb{R}^{K} \label{F-OOS}
 \end{align}
 Completing this for all $S$ months effectively yields the OOS time series of the basis assets $F' \in \mathbb{R}^{S \times K}$. Then calculate multiperiod returns 
 by combining it with $W$ such that 
@@ -149,34 +141,34 @@ Construct SDF weights $w^S$ using the Markowitz formula. Then, use \ref{F-OOS} a
 and combine with SDF weights to get the OOS return. If the approximate model in \ref{approx} out-performs this naive model, then 
 we empirically justify our assumption that basis asset returns in separate months are uncorrelated.
 
-\subsection{Pooled PCA} \label{pooled-pca}
+% \subsection{Pooled PCA} \label{pooled-pca}
 
-Given time $T$ and horizon $S$, \footnote{This method is in a sense independent of the horizon, is this correct?}once again slice the window of three-dimensional data $R \in \R^{W \times L \times N}$ Let $\overrightarrow{R}$ be 
-\[\overrightarrow{R} = \begin{pmatrix}
-R_{1, 1, :} & \cdots & R_{1, L, :}\\
-\vdots & \vdots & \vdots\\
-R_{W, 1, :} & \cdots & R_{W, L, :}\\
-\end{pmatrix}
-\in \R^{W \times NL}.\]
-The Pooled PCA estimator interprets the factor returns conditioned on lagged characteristics as new 
-cross-sectional observations and applies traditional PCA to this matrix to obtain basis assets and loadings
-\begin{align}
-    \overrightarrow{R} = \widehat{F} \widehat{\Lambda}^\top
-\end{align}
-where $\widehat{F} \in \R^{W \times K}$ and $\widehat{\Lambda} \in \R^{NL \times K}$. Calculate basis asset moments
-\begin{align}
-    \mu^{F, S} = \overline{\widehat{F}} \in \R^K \text{ and } \Sigma^{F, S} = \frac{1}{W}\widehat{F}^\top \widehat{F} - \overline{\widehat{F}} \ \overline{\widehat{F}}^\top \in \R^{K \times K} \label{pca-moments}
-\end{align}
-and the subsequent SDF weights using the Markowitz formula. OOS factor returns are estimated by a regression 
-of the returns on the estimated loadings 
-\begin{align}
-    \widehat{F}_{OOS} = \overrightarrow{R}_{OOS} \widehat{\Lambda} \left( \widehat{\Lambda}^\top \widehat{\Lambda}\right)^{-1} \in \R^{S} \label{pca-oos-regression}
-\end{align}
+% Given time $T$ and horizon $S$, \footnote{This method is in a sense independent of the horizon, is this correct?}once again slice the window of three-dimensional data $R \in \R^{W \times L \times N}$ Let $\overrightarrow{R}$ be 
+% \[\overrightarrow{R} = \begin{pmatrix}
+% R_{1, 1, :} & \cdots & R_{1, L, :}\\
+% \vdots & \vdots & \vdots\\
+% R_{W, 1, :} & \cdots & R_{W, L, :}\\
+% \end{pmatrix}
+% \in \R^{W \times NL}.\]
+% The Pooled PCA estimator interprets the factor returns conditioned on lagged characteristics as new 
+% cross-sectional observations and applies traditional PCA to this matrix to obtain basis assets and loadings
+% \begin{align}
+%     \overrightarrow{R} = \widehat{F} \widehat{\Lambda}^\top
+% \end{align}
+% where $\widehat{F} \in \R^{W \times K}$ and $\widehat{\Lambda} \in \R^{NL \times K}$. Calculate basis asset moments
+% \begin{align}
+%     \mu^{F, S} = \overline{\widehat{F}} \in \R^K \text{ and } \Sigma^{F, S} = \frac{1}{W}\widehat{F}^\top \widehat{F} - \overline{\widehat{F}} \ \overline{\widehat{F}}^\top \in \R^{K \times K} \label{pca-moments}
+% \end{align}
+% and the subsequent SDF weights using the Markowitz formula. OOS factor returns are estimated by a regression 
+% of the returns on the estimated loadings 
+% \begin{align}
+%     \widehat{F}_{OOS} = \overrightarrow{R}_{OOS} \widehat{\Lambda} \left( \widehat{\Lambda}^\top \widehat{\Lambda}\right)^{-1} \in \R^{S} \label{pca-oos-regression}
+% \end{align}
 
-and combined with the mean-variance weights yields the OOS return. This method freely learns the structure of both the lag components and the cross-sectional loadings ie. $\lambda (B \circ W)$; on the other hand, 
-applying PARAFAC forces this decomposition. The tensor based approaches in 
-\ref{approx} and \ref{precise} impose a more structured, economically-intuitive approach and should theoretically outperform
-this relatively nonparametric method. 
+% and combined with the mean-variance weights yields the OOS return. This method freely learns the structure of both the lag components and the cross-sectional loadings ie. $\lambda (B \circ W)$; on the other hand, 
+% applying PARAFAC forces this decomposition. The tensor based approaches in 
+% \ref{approx} and \ref{precise} impose a more structured, economically-intuitive approach and should theoretically outperform
+% this relatively nonparametric method. 
 
 \subsection{Multihorizon PCA} \label{multiperiod-pca}
 
@@ -193,7 +185,11 @@ basis assets $\widehat{F}$ and loadings $\widehat{\Lambda}$. Compute basis asset
     \mu^{F, S} &= \frac{1}{W-S+1} \sum_{t=1}^{W-S+1} \widehat{F}_t = \overline{\widehat{F}} \in \R^{K}\\
     \Sigma^{F, S} &= \text{Newey-West}(\widehat{F}, \text{overlap}=S-1) \in \R^{K \times K}
 \end{align*}
-Construct SDF weights and then use \ref{pca-oos-regression} to find OOS basis asset values and the model's 
+OOS factor returns are estimated by a regression of the returns on the estimated loadings 
+\begin{align}
+    \widehat{F}_{OOS} = \overrightarrow{R}_{OOS} \widehat{\Lambda} \left( \widehat{\Lambda}^\top \widehat{\Lambda}\right)^{-1} \in \R^{S} \label{pca-oos-regression}
+\end{align}
+Construct SDF weights and use \ref{pca-oos-regression} to find OOS basis asset values and the model's 
 subsequent OOS returns.
 
 \subsection{Multihorizon Model-Free}
@@ -208,6 +204,36 @@ compute the moments of the factors as is.
 Construct mean-variance weights and combine with the OOS factor values to obtain the $S$-month return. 
 In theory, as $K \to N$, the Sharpe Ratios from \ref{multiperiod-pca} should approach this Model-Free method.
 
+\section{Further Analysis}
+
+\subsection{SDF weights as a function of horizon}
+
+SDF weights as a function of horizon. Empirically, for a different number of factors, 
+we show $w^S$ as a function of $S$ in a lineplot. We can normalize the $l_1$ norm of the weights to $1$. 
+To study this theoretically is a little bit more challenging. Recall that 
+\begin{align*}
+    w^S = \left( \left( \sum_{l=1}^S W_l W_l^\top\right) \cdot \text{Var}_t(F_t) \right)^{-1} \text{diag}\left(\sum_{l=1}^S W_k \right) \mathbb{E}_t [F_t] 
+\end{align*}
+By Lemma \ref{elementwise-ruins-everything}, there does not exist a closed-form expression for 
+the element-wise product inside the matrix inverse. However, we can take advantage of the additional structure from the outer products of the 
+lag components. By Lemma \ref{outer-prod-elementwise-trick}, 
+\begin{align*}
+    \left( \left( \sum_{l=1}^S W_l W_l^\top \right) \cdot \text{Var}_t(F_t)\right) &= \left(\sum_{l=1}^S W_l W_l^\top \cdot \text{Var}_t(F_t)\right)^{-1}\\
+    &= \left(\sum_{l=1}^S D_{W_l}\text{Var}_t(F_t)D_{W_l}^\top\right)^{-1}
+\end{align*} 
+
+Note that the covariance matrix of the basis assets if symmetric, positive semi-definite and so
+each term in the summation is also summation. Does this help?
+
+
+
+\subsection{Sharpe Ratio of the SDF as a function of horizon}
+
+\begin{align*}
+    SR^S &= (\mu^{F, S})^\top w^S \sqrt{\frac{12}{S}}\\
+    &= (\mu^{F, S})^\top \left( \left( \sum_{l=1}^S W_l W_l^\top\right) \cdot \text{Var}_t(F_t) \right)^{-1} \left(\sum_{l=1}^S W_k \right) \cdot \mathbb{E}_t [F_t] \sqrt{\frac{12}{S}}
+\end{align*}
+
 \newpage
 
 \section{Collection of Results}
@@ -220,18 +246,17 @@ In theory, as $K \to N$, the Sharpe Ratios from \ref{multiperiod-pca} should app
 
 \subsection{Primary Specification: Full-Sample}
 
-\input{char_anom.tex}
-
-still need to add the pca graph for CA dataset + ensure that the model-free sharpes are included for all datasets
-
+\input{helpers/char_anom.tex}
 
 maybe a table that's like 
 
 model $\implies$ K value (or model-free) $\implies$ sharpes for all 36 horizons
 
-\input{scs.tex}
+\input{helpers/scs.tex}
 
-\input{wrds.tex}
+\input{helpers/wrds.tex}
+
+\input{helpers/ff.tex}
 
 \newpage
 
@@ -239,15 +264,22 @@ model $\implies$ K value (or model-free) $\implies$ sharpes for all 36 horizons
 
 \subsection{Primary Specification: OOS Results}
 
-\input{char_anom_oos.tex}    
+\input{helpers/char_anom_oos.tex}    
 
-\input{scs_oos.tex}
+\input{helpers/scs_oos.tex}
 
-\input{wrds_oos.tex}
+\input{helpers/wrds_oos.tex}
 
+\input{helpers/ff_oos.tex}
+
+\newpage
 % \section{Appendix B}
 
 % \[\Lambda w_n = w_k \implies w_n = \Lambda_k^\dagger w_k\]
 % \[w_n = \Lambda_k(\Lambda_k^T \Lambda_k)^{-1} w_k\]
+
+\section{Appendix B}
+
+\input{proofs.tex}
 
 \end{document}

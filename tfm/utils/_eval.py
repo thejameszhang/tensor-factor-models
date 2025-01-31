@@ -213,7 +213,7 @@ def plot(sr: jnp.ndarray,
     axes.text(0.5, 0.95, f'{start_date} to {end_date}', transform=axes.transAxes, ha='center', fontsize=10)
     for i in range(len(lst_K)):
         temp = sr[:, i] * jnp.sqrt(1 / jnp.arange(1, max_horizon + 1)) * jnp.sqrt(12)
-        axes.plot(temp, linestyle='-', label=f'K={lst_K[i]}')
+        axes.plot(temp, linestyle='-', label=f'{lst_K[i]}' if lst_K[i] == 'Model Free' else f'K={lst_K[i]}')
     axes.set_xticks(jnp.arange(0, max_horizon, 5), labels=jnp.arange(1, max_horizon + 1, 5))
     axes.set_xlabel(xlabel)
     axes.set_ylabel(ylabel)

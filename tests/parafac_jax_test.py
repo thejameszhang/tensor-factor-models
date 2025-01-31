@@ -46,7 +46,8 @@ def compare_implementations(
         fix_intercept_mode=fix_intercept_mode,
         overweight_mode=overweight_mode,
         gamma=gamma,
-        normalize_factors=True
+        normalize_factors=True,
+        nonnegative=False
     )
     
     # Convert JAX arrays to numpy for comparison
@@ -82,6 +83,7 @@ def compare_implementations(
         print(f"\nChecking fixed intercept mode {fix_intercept_mode}:")
         print("Original first column:", factors_original[fix_intercept_mode][:5, 0])
         print("JAX first column:     ", factors_jax[fix_intercept_mode][:5, 0])
+        print(factors_jax[fix_intercept_mode])
     
     return {
         'error_original': error_original,
