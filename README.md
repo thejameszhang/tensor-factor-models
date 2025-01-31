@@ -1,1 +1,1 @@
-# Term Structures of Characteristics-Based Portfolios
+# Term Structures of Firm Characteristics and Multi-Horizon Investments
