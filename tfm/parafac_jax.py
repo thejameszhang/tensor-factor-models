@@ -10,9 +10,18 @@ def initialize_factors_svd(tensor: jnp.ndarray, rank: int, random_state: int = 0
     """Initialize factor matrices using SVD."""
     weights = jnp.ones(rank) # Initial weights are different then src, but doesn't change anything
     factors = []
+    key = jax.random.PRNGKey(random_state)
+    keys = jax.random.split(key, tensor.ndim)
     
-    for mode in range(tensor.ndim):
-        u, s, _ = jnp.linalg.svd(matricize(tensor, mode), full_matrices=False)
+    for k, mode in zip(keys, range(tensor.ndim)):
+        matricized = matricize(tensor, mode)
+        u, s, _ = jnp.linalg.svd(matricized, full_matrices=False) # dim: 
+
+        if rank > u.shape[1]:
+            shape = (u.shape[0], rank - u.shape[1])
+            random_part = jax.random.uniform(k, shape, minval=0.0, maxval=1.0)
+            u = jnp.concatenate([u, random_part], axis=1)
+
         factors.append(u[:, :rank])
     
     return weights, factors
@@ -90,14 +99,19 @@ def parafac_enhanced(
             tensor_use = tensor_work if mode != overweight_mode else tensor
             
             if mode == fix_intercept_mode:
-                new_factor = update_factor_fixed_intercept(tensor_use, factors, mode, weights)
+                new_factor, one_lag_weights = update_factor_fixed_intercept(tensor_use, factors, mode, weights)
+                factors = [
+                    new_factor if i == mode else f
+                    for i, f in enumerate(factors)
+                ]
+                factors[0] = factors[0] * (one_lag_weights[None, :] + 1e-12) # ensure factors are scaled correctly
             else:
                 new_factor = update_factor(tensor_use, factors, mode, weights)
             
-            factors = [
-                new_factor if i == mode else f
-                for i, f in enumerate(factors)
-            ]
+                factors = [
+                    new_factor if i == mode else f
+                    for i, f in enumerate(factors)
+                ]
         
         # Normalize after all modes are updated
         if normalize_factors:
@@ -167,10 +181,12 @@ def update_factor_fixed_intercept(tensor: jnp.ndarray, factors: List[jnp.ndarray
     
     # Fix first column to ones (not normalized)
     # updated_factor = updated_factor.at[:, 0].set(1.0) # is this right? shouldn't it be .at[0, :] if W is LxK
-    updated_factor = updated_factor.at[0, :].set(1.0)
-    
+    # updated_factor = updated_factor.at[0, :].set(1.0)
+    one_lag_weights = updated_factor[0, :]
+    updated_factor = updated_factor / (one_lag_weights[None, :] + 1e-12)
+
     # Let normalization happen later if needed
-    return updated_factor
+    return updated_factor, one_lag_weights
 
 @partial(jax.jit, static_argnums=(2))
 def update_factor(tensor: jnp.ndarray, factors: List[jnp.ndarray], mode: int, weights: jnp.ndarray) -> jnp.ndarray:
