@@ -1,0 +1,8 @@
+---
+idx_ver: 4
+intercept_constr: True
+normalize_ret: False 
+input_type: ret
+spec: rankptf
+max_lag: 120 
+dir_input: /home/james/projects/tsfc/code/code_11092024/organized_data/organized_data/toy
