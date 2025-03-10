@@ -1,3 +1,5 @@
 data/
 organized_data/
 __pycache__
+*.npz
+*.pkl
