@@ -4,8 +4,9 @@ import jax.numpy as jnp
 from typing import Tuple, List, Optional, Dict
 from functools import partial
 import numpy as np
+from tfm.utils._constants import *
 
-@partial(jax.jit, static_argnums=(1, 2))
+@partial(jax.jit, backend=main_compute_device, static_argnums=(1, 2))
 def initialize_factors_svd(tensor: jnp.ndarray, rank: int, random_state: int = 0) -> Tuple[jnp.ndarray, List[jnp.ndarray]]:
     """Initialize factor matrices using SVD."""
     weights = jnp.ones(rank) # Initial weights are different then src, but doesn't change anything
@@ -26,7 +27,7 @@ def initialize_factors_svd(tensor: jnp.ndarray, rank: int, random_state: int = 0
     
     return weights, factors
 
-@partial(jax.jit, static_argnums=(1, 2))
+@partial(jax.jit, backend=main_compute_device, static_argnums=(1, 2))
 def initialize_factors_random(tensor: jnp.ndarray, rank: int, random_state: int) -> Tuple[jnp.ndarray, List[jnp.ndarray]]:
     """Initialize factor matrices using random initialization."""
     weights = jnp.ones(rank)
@@ -43,14 +44,14 @@ def initialize_factors_random(tensor: jnp.ndarray, rank: int, random_state: int)
     
     return weights, factors
 
-@jax.jit
+@partial(jax.jit, backend=main_compute_device)
 def calculate_reconstruction_error(tensor: jnp.ndarray, weights: jnp.ndarray, factors: List[jnp.ndarray]) -> jnp.ndarray:
     """Calculate reconstruction error."""
     reconstructed = reconstruct_tensor(weights, factors)
     diff = tensor - reconstructed
     return jnp.sqrt(jnp.sum(diff ** 2)) / jnp.sqrt(jnp.sum(tensor ** 2))
 
-@partial(jax.jit, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+@partial(jax.jit, backend=main_compute_device, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
 def parafac_enhanced(
     tensor: jnp.ndarray,
     rank: int,
@@ -107,11 +108,16 @@ def parafac_enhanced(
                 factors[0] = factors[0] * (one_lag_weights[None, :] + 1e-12) # ensure factors are scaled correctly
             else:
                 new_factor = update_factor(tensor_use, factors, mode, weights)
-            
                 factors = [
                     new_factor if i == mode else f
                     for i, f in enumerate(factors)
                 ]
+            
+            # Dynamicaly adjust threshold relative to lambda and largest factor coefficient
+            # if lambda_l1[mode] > 0:
+            #     # threshold = 0.01 * lambda_l1[mode]
+            #     threshold = 0.1 * lambda_l1[mode] / jnp.max(jnp.abs(factors[mode]))
+            #     factors[mode] = jnp.sign(factors[mode]) * jnp.clip(jnp.abs(factors[mode]) - threshold, min=0)
         
         # Normalize after all modes are updated
         if normalize_factors:
@@ -139,7 +145,7 @@ def parafac_enhanced(
     
     return weights, factors
 
-@partial(jax.jit, static_argnums=(1,))
+@partial(jax.jit, backend=main_compute_device, static_argnums=(1,))
 def normalize_factors(factors: Dict[str, jnp.ndarray], reorder: bool = True) -> Dict[str, jnp.ndarray]:
     """Normalize tensor factors and optionally reorder by explained variance."""
     F, W, B = factors['F'], factors['W'], factors['B']
@@ -173,7 +179,7 @@ def normalize_factors(factors: Dict[str, jnp.ndarray], reorder: bool = True) -> 
         'S': new_S
     }
 
-@partial(jax.jit, static_argnums=(2))
+@partial(jax.jit, backend=main_compute_device, static_argnums=(2))
 def update_factor_fixed_intercept(tensor: jnp.ndarray, factors: List[jnp.ndarray], mode: int, weights: jnp.ndarray) -> jnp.ndarray:
     """Update factor matrix while keeping first column fixed to ones."""
     # Get regular update
@@ -188,7 +194,7 @@ def update_factor_fixed_intercept(tensor: jnp.ndarray, factors: List[jnp.ndarray
     # Let normalization happen later if needed
     return updated_factor, one_lag_weights
 
-@partial(jax.jit, static_argnums=(2))
+@partial(jax.jit, backend=main_compute_device, static_argnums=(2))
 def update_factor(tensor: jnp.ndarray, factors: List[jnp.ndarray], mode: int, weights: jnp.ndarray) -> jnp.ndarray:
     """Update factor matrix using ALS with improved numerical stability."""
     other_factors = [f for i, f in enumerate(factors) if i != mode]
@@ -230,12 +236,12 @@ def reconstruct_tensor(weights: jnp.ndarray, factors: List[jnp.ndarray]) -> jnp.
     
     return reconstruction
 
-@partial(jax.jit, static_argnums=(1,))
+@partial(jax.jit, backend=main_compute_device, static_argnums=(1,))
 def matricize(tensor: jnp.ndarray, mode: int) -> jnp.ndarray:
     """Matricize the tensor along the specified mode."""
     return jnp.moveaxis(tensor, mode, 0).reshape(tensor.shape[mode], -1)
 
-@jax.jit
+@partial(jax.jit, backend=main_compute_device)
 def khatri_rao_product(matrices: List[jnp.ndarray]) -> jnp.ndarray:
     """Compute the Khatri-Rao product of a list of matrices."""
     n_cols = matrices[0].shape[1]

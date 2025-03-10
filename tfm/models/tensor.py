@@ -6,21 +6,19 @@ from functools import partial
 import jax
 import jax.numpy as jnp
 from tfm.parafac_jax import parafac_enhanced, normalize_factors
+from tfm.parafac_admm import parafac_admm
 from tfm.utils._tensor import *
 from tfm.utils._constants import *
 from tfm.utils._cov import newey_west_cov_jax
 
-@partial(jax.jit, backend=main_compute_device, static_argnums=(2, 3, 4, 5, 6, 7, 8, 9))
+@partial(jax.jit, backend=main_compute_device, static_argnums=(2, 3, 4, 5, 6))
 def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray, 
                                 idx_window: int, 
                                 K: int, 
                                 window_size: int,
                                 lag: int,
                                 max_horizon: int,
-                                save_W: bool = False,
-                                random_seed: int = 100,
-                                n_iter_max: int = 100, 
-                                use_newey_west: bool = False):
+                                lasso: Tuple[float]):
     """
     Computes mean variance weights and portfolio returns in a multiperiod 
     setting for one K and one window size. K and window_size MUST be static. Done in a rolling 
@@ -31,7 +29,7 @@ def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray,
         X_log: log returns - dim: (T, max_lag, N)
         idx_window: 
         K: rank of PARAFAC decomposition
-        window_size: 60, 120, or 240
+        window_size: 120
     Returns:
         ret_MV: mean variance factor returns - dim: (max_horizon,)
     """
@@ -44,14 +42,22 @@ def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray,
         rank=K,
         random_state=random_seed,
         n_iter_max=n_iter_max,
-        fix_intercept_mode=1
+        fix_intercept_mode=1,
     )
+    # weights, factors = parafac_admm(
+    #     tensor=X_fit,
+    #     rank=K,
+    #     l1_reg=lasso
+    # )
+    # one_lag_weights = factors[1][0, :][None, :] + 1e-12
+    # factors[1] /= one_lag_weights
+    # factors[0] *= one_lag_weights
     
     # Extract and normalize factors
     factors = dict(zip(['F','W','B'], factors))
     factors['S'] = weights
     factors = normalize_factors(factors, reorder=True)
-    F, W, B, S = [factors[key] for key in ['F','W','B','S']]
+    F, W, B, S = [factors[key] for key in ['F','W','B','S']] 
 
     Z_fit = jax.vmap(compute_Z_row, in_axes=(None, None, None, 0))(W, B, S, jnp.arange(K)) # dim: (K, NL)
     F_next = jax.vmap(get_F_next, in_axes=(None, None, 0))(Z_fit, X_next, jnp.arange(max_horizon)) # dim: (max_horizon, K)
@@ -70,10 +76,11 @@ def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray,
     mv_naive = jax.vmap(get_mv_weights, in_axes=(None, None, None, 0))(mu_naive, var_naive, K, jnp.arange(max_horizon)) # dim: (max_horizon, K)
     ret_naive = (FW_next * mv_naive).sum(axis=1) # dim: (max_horizon)
 
-    if save_W:
-        return ret_tfm, ret_naive, W
-    
-    return ret_tfm, ret_naive
+    # 3. Use MVE weights for the 1-month horizon, but hold this for all horizons
+    mv_tfm_naive = jnp.tile(mv_tfm[0][None, :], (max_horizon, 1)) # dim: (max_horizon, K)
+    ret_tfm_naive = (FW_next * mv_tfm_naive).sum(axis=1) # dim: (max_horizon)
+
+    return ret_tfm, ret_naive, ret_tfm_naive, W, F, B, mv_tfm
 
 
 def Tensor_One_Window_One_K(X_fit: jnp.ndarray, 

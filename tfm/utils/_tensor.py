@@ -52,10 +52,7 @@ def get_cov_approx(FW: jnp.ndarray, idx_s: int):
 
 @partial(jax.jit, backend=main_compute_device, static_argnums=(2))
 def get_mv_weights(mu: jnp.ndarray, cov: jnp.ndarray, K: int, idx_s: int):
-    if K > 1:
-        return jnp.linalg.inv(cov[idx_s]) @ mu[idx_s]
-    else:
-        return jnp.mean(mu) / jnp.var(cov)
+    return jnp.linalg.inv(cov[idx_s]) @ mu[idx_s]
     
 @partial(jax.jit, backend=main_compute_device)
 def get_X_fitted_oos(W: WTensor, B: BTensor, S: STensor, F_oos: jnp.ndarray, i: int):
@@ -93,3 +90,28 @@ def get_mu_naive(FW: jnp.ndarray, idx_h: int):
     return jnp.mean(FW[:, idx_h, :], axis=0)
     
 
+@partial(jax.jit)
+def GC(W: WTensor, Wt_lst: List[WTensor], i: int):
+    """ 
+    - compute generalized correlation between constant and time-varying loadings
+    - align time-varying with constant loadings
+    Args (numpy arrays):
+        W (N,K): estimated on the full sample
+        Wt (N,K): estimated on a rolling window
+    Returns:
+        arr_gc (K,): generalized correlation
+        Wt_timerotated (N,K): time-varying rotated to align with constant loading
+    
+    """ 
+    # assert Wt.shape==W.shape
+    Wt = Wt_lst[i]
+    
+    M = jnp.linalg.inv(Wt.T @ Wt) @ (Wt.T @ W) @ jnp.linalg.inv(W.T @ W) @ (W.T @ Wt)
+
+    eig, _ = jnp.linalg.eig(M)
+    gc = jnp.sort(jnp.sqrt(jnp.abs(eig)))[::-1]
+    
+    # Time-varying loadings rotated to align with constant loading
+    Wt_timerotated = Wt @ jnp.linalg.inv(Wt.T @ Wt) @ Wt.T @ W
+
+    return gc, Wt_timerotated

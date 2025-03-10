@@ -7,6 +7,7 @@ import numpy.typing as npt
 
 # constants 
 main_compute_device = 'gpu'
+
 def cpu(): 
     return main_compute_device == 'cpu'
 
@@ -27,5 +28,5 @@ n_iter_max = 100
 Tensor = Union[npt.NDArray[dtype_compact], jnp.ndarray]
 STensor = Tensor #Annotated[Tensor, Literal['Scaling Vector (K)']]
 FTensor = Tensor #Annotated[Tensor, Literal['Time Series Factor Matrix (TxK)']]
-BTensor = Tensor #Annotated[Tensor, Literal['Cross Sectional Loadings Tensor (NxK)']]
-WTensor = Tensor #Annotated[Tensor, Literal['Lags Loadings Tensor (LxK)']]
+BTensor = Tensor #Annotated[Tensor, Literal['Cross Sectional Loadings Matrix (NxK)']]
+WTensor = Tensor #Annotated[Tensor, Literal['Lags Loadings Matrix (LxK)']]

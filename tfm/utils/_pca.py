@@ -82,10 +82,7 @@ def get_factor_means(F: jnp.ndarray, idx_h: int):
 
 @partial(jax.jit, backend=main_compute_device, static_argnums=(2))
 def get_mv_weights(mu: jnp.ndarray, cov: jnp.ndarray, K: int, idx_h: int):
-    if K > 1:
-        return jnp.linalg.inv(cov[idx_h]) @ mu[idx_h]
-    else:
-        return jnp.mean(mu) / jnp.var(cov)
+    return jnp.linalg.inv(cov[idx_h]) @ mu[idx_h]
 
 def SDF_construct(Fhat,Lambdahat, lst_K=None, use_newey_west_cov = False, num_overlap_nw = 0):
     """

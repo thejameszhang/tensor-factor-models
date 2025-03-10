@@ -68,6 +68,34 @@ def ModelFree_Multiperiod_Unmapped(X_log: jnp.ndarray,
     return ret # dim: scalar
 
 
+@partial(jax.jit, backend=main_compute_device, static_argnums=(3, 4, 5,))
+def Toy_PCA_Unmapped(X_log: jnp.ndarray, idx_window: int, gamma: int,
+                            K: int, window_size: int, horizon: int = 36):
+    """
+    For each horizon h, constructs overlapping multiperiod returns and uses PCA to extract the K 
+    factors. Computes mean variancce efficient weights and applies it to the OOS one-period return. 
+    Args:
+        - X_log: characteristics-based portfolio tensor - dim: (window_size, horizon, N)
+    Returns:
+        - returns: OOS one-period return - dim: (scalar,)
+    """
+    X_log = X_log[:, :, 0]
+    X_fit = jax.lax.dynamic_slice(X_log, start_indices=(idx_window, 0), slice_sizes=(window_size, horizon)) # dim: window_size, N
+    X_multi_fit = get_multiperiod_returns(X_fit, horizon, window_size) # dim: (window_size - horizon + 1, N), no wasted observations
+    
+    factors_pca, loadings_pca = RPPCA(X_multi_fit, gamma=gamma, K=K) # dim: (T, K) and (N, K)
+    mu_pca = jnp.mean(factors_pca, axis=0) # dim: (K,)
+    var_pca = newey_west_cov_jax(factors_pca, num_overlap=horizon-1) # dim: (K, K)
+    mv_pca = jnp.linalg.inv(var_pca) @ mu_pca # dim: (K,)
+    
+    X_next = jax.lax.dynamic_slice(X_log, start_indices=(idx_window + window_size, 0, 0), slice_sizes=(horizon, horizon, N)) # dim: 1, N
+    X_multi_next = get_multiperiod_returns(X_next, horizon, horizon)[0] # dim: (N,)
+
+    factors_next_pca = X_multi_next @ loadings_pca @ jnp.linalg.inv(loadings_pca.T @ loadings_pca) # dim: (1, K)
+    ret_pca = factors_next_pca @ mv_pca # dim: scalar
+    return ret_pca
+
+
 @partial(jax.jit, backend=main_compute_device, static_argnums=(2, 3, 4, 5, 6,))
 def Pooled_PCA_Multiperiod_Unmapped(X_log: jnp.ndarray, 
                             idx_window: int, 
@@ -243,7 +271,7 @@ def RPPCA_One_Window(X_fit: jnp.ndarray, X_oos: jnp.ndarray, lst_K: List[int], g
 #     assert num_window > 0
 
 #     # fit RPPCA on all data to get constant loading
-#     _, Lambdahat_total = RPPCA(X=X, K=K, gamma=gamma)
+#     _, W = RPPCA(X=X, K=K, gamma=gamma)
 
 #     mat_SDFweightsassets = jnp.full((num_window,N,K),jnp.nan)
 #     mat_ret_oos = jnp.full((num_window,K), jnp.nan) # OOS ret or rx 
@@ -268,7 +296,7 @@ def RPPCA_One_Window(X_fit: jnp.ndarray, X_oos: jnp.ndarray, lst_K: List[int], g
 #         ret_oos = X_oos @ mat_SDFweightsassets_t
 
 #         # GC with constant loading
-#         gc,_=GC(Lambdahat_total=Lambdahat_total,Lambdahat=Lambdahat)
+#         gc,_=GC(W=W,Lambdahat=Lambdahat)
 
 #         # record results
 #         mat_SDFweightsassets[t,:]=mat_SDFweightsassets_t
@@ -315,36 +343,3 @@ def RPPCA_One_Window(X_fit: jnp.ndarray, X_oos: jnp.ndarray, lst_K: List[int], g
         
 #     dict_out={'mat_X_next_fitted':mat_X_next_fitted,'mat_ret_mv_oos':mat_ret_mv_oos}
 #     return dict_out
-
-
-
-# def GC(Lambdahat_total,Lambdahat):
-#     """ 
-#     - compute generalized correlation between constant and time-varying loadings
-#     - align time-varying with constant loadings
-#     Args (numpy arrays):
-#         Lambdahat_total(N,K): estimated on the full sample
-#         Lambdahat (N,K): estimated on a rolling window
-#     Returns:
-#         arr_gc (K,): generalized correlation
-#         Lambdahat_timerotated (N,K): time-varying rotated to align with constant loading
-    
-#     """ 
-#     assert Lambdahat.shape==Lambdahat_total.shape
-    
-#     M=jnp.linalg.inv(Lambdahat.T@Lambdahat)@\
-#         (Lambdahat.T@Lambdahat_total)@\
-#         jnp.linalg.inv(Lambdahat_total.T@Lambdahat_total)@\
-#         (Lambdahat_total.T@Lambdahat)
-
-#     eig,_=jnp.linalg.eig(M)
-#     gc=jnp.sort(jnp.sqrt(jnp.abs(eig)))[::-1]
-    
-#     # Time-varying loadings rotated to align with constant loading
-#     Lambdahat_timerotated=Lambdahat@jnp.linalg.inv(Lambdahat.T@Lambdahat)@Lambdahat.T@Lambdahat_total
-
-#     return gc,Lambdahat_timerotated
-    
-
-
-# %%
