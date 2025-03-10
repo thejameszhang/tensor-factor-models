@@ -202,7 +202,6 @@ for method in ['Tensor', 'PCA']:
 
         filename='term_structure_{}_fitted_ret_K{}.pdf'\
             .format(method, K)
-        #print(filename)
         fig.savefig(dir_out+filename, bbox_inches='tight')
         plt.close('all')
 

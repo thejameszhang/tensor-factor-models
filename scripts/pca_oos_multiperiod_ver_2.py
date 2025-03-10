@@ -3,6 +3,7 @@
 Example usage: 
 python3 pca_oos_multiperiod_ver_2.py --dataset=scs --lst_window_size=120 --lst_K=1,3,5,10,15,20,25 --max_horizon=36 --max_lag=120 --start='01-2005'
 python3 pca_oos_multiperiod_ver_2.py --dataset=ff --lst_window_size=120 --lst_K=1,2,3,4,5 --max_horizon=36 --max_lag=120 --start='01-2005'
+python3 pca_oos_multiperiod_ver_2.py --dataset=toy --lst_window_size=120 --lst_K=1,2,3,4,5,15,10,25 --max_horizon=36 --max_lag=120 --start='01-2005'
 ========================================================================================================================
 
 Author: James Zhang
