@@ -1,0 +1,338 @@
+\documentclass[12pt,letterpaper,fleqn]{article}
+\usepackage{comment,etex,amsmath,fullpage,amsfonts,titletoc,titlesec,amssymb,theorem}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{graphicx,subcaption,hyperref,pgfplots,dcolumn,ctable,floatpag,ulem}
+\usepackage{array, multirow,placeins}
+\usepackage{geometry}
+\geometry{tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+\usepackage{abstract}
+\usepackage{stackengine}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric}
+\titleformat*{\section}{\large\bfseries}
+\titleformat*{\subsection}{\normalsize\bfseries}
+\hypersetup{colorlinks=true,
+linkcolor=blue,
+citecolor=blue,
+urlcolor=blue}
+%\graphicspath{ {Figures/} }
+
+\usetikzlibrary{pgfplots.groupplots}
+\usetikzlibrary{patterns, arrows}
+\usetikzlibrary{arrows,positioning,shadows,shapes,calc,fit,backgrounds}
+\tikzset{>=stealth}
+
+\reversemarginpar
+\newcommand{\insertfigure}[1]{
+\marginpar{\hspace{-0.3cm}
+\begin{tikzpicture}%
+\node[draw=black!40,very thick,rounded corners,fill=black!5,font=\footnotesize,text width=1.3cm,text centered,inner sep=0.15cm] {#1};
+\end{tikzpicture}}}
+\floatpagestyle{empty}
+\makeatletter
+\def\pgfplots@drawtickgridlines@INSTALLCLIP@onorientedsurf#1{}
+\makeatother
+\DeclareMathOperator*{\argmax}{\mathrm{argmax}}
+
+\usepackage{caption}
+
+\captionsetup{position=above,
+labelsep=colon,
+labelfont={bf},
+textfont={},
+skip=0.8cm,
+justification=justified,
+margin=0cm}
+
+\newcommand{\fignotes}[1]{
+\bigskip
+\begin{center}
+\parbox{\textwidth}{\small
+\addtolength{\baselineskip}{0.1\baselineskip}
+#1}
+\end{center}}
+
+\newcommand{\figcap}[2]{
+\caption{#1}
+\begin{center}
+\parbox{\textwidth}{\small
+\addtolength{\baselineskip}{0.1\baselineskip}
+#2}
+\end{center}}
+
+
+%Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{natbib}
+\setlength{\bibhang}{.3in}
+\setlength{\bibsep}{.03in plus0.05in minus0.05in}
+\makeatletter
+\renewcommand{\bibsection}{
+\begin{center}
+\section*{\refname\@mkboth{\MakeUppercase{\refname}}
+{\MakeUppercase{\refname}}}
+%      \bigskip
+\end{center}
+}
+\makeatother
+
+\setcounter{MaxMatrixCols}{10}
+
+%\newcommand{\underline{C}}{\underbar{C}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgment}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{assumption}{Assumption}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}{Lemma}
+%\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+% -- Appendix
+\newtheorem{theorem-app}{Theorem}[section]
+\newtheorem{lemma-app}[theorem-app]{Lemma}
+\newtheorem{proposition-app}[theorem-app]{Proposition}
+\theorembodyfont{\upshape}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+
+\newenvironment{proof}[1][\proofname]{
+\par\normalfont\trivlist\item[\hskip\labelsep\textbf{#1}.]\ignorespaces}
+{\hfill $\square$ %Q.E.D.
+\endtrivlist}
+\newcommand{\proofname}{Proof}
+
+\newcommand{\bx}{{\bf x}}
+\newcommand{\by}{{\bf y}}
+\newcommand{\id}{{\rm Id}}
+\newcommand{\Ls}{\Lambda^s}
+\newcommand{\Sv}{\bar\Lambda}
+\newcommand{\sv}{\bar\lambda}
+\newcommand{\cm}{\mathcal M}
+\newcommand{\cw}{\mathcal W}
+\newcommand{\gs}{\sigma}
+\newcommand{\cU}{{\mathcal U}}
+\newcommand{\gD}{\Delta}
+\newcommand{\ga}{\alpha}
+\newcommand{\gb}{\beta }
+\newcommand{\gl}{\lambda}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\gd}{\delta}
+\newcommand{\C}{{\mathbb C}}
+\newcommand{\E}{{\mathbb E}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\Prr}{{\mathbb P}}
+\newcommand{\N}{{\mathbb N}}
+\newcommand{\D}{{\mathbb D}}
+\newcommand{\Z}{{\mathbb Z}}
+\newcommand{\Var}{{\operatorname{Var}}}
+\newcommand{\gO}{\Omega}
+\newcommand{\go}{\omega}
+\newcommand{\Exp}{{\operatorname{Exp}}}
+\newcommand{\Tail}{{\operatorname{Tail}}}
+\newcommand{\cL}{{\mathcal L}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\cf}{\mathcal F}
+\newcommand{\cN}{\mathcal N}
+\newcommand{\gS}{{\Sigma}}
+\newcommand{\bB}{{\bf B}}
+\newcommand{\bD}{{\bf D}}
+\newcommand{\bQ}{{\bf Q}}
+\newcommand{\gL}{{\Lambda}}
+\newcommand{\bM}{{\bf M}}
+\newcommand{\bA}{{\bf A}}
+\newcommand{\cQ}{{\mathcal Q}}
+\newcommand{\supp}{{\rm supp}}
+\newcommand{\cI}{{\mathcal I}}
+\newcommand{\cZ}{{\mathcal Z}}
+\newcommand{\Cov}{{\rm Cov}}
+\newcommand{\bX}{{\bf X}}
+\newcommand{\bq}{{\bf q}}
+\newcommand{\bP}{{\bf P}}
+\newcommand{\Sb}{{\bf S}}
+\newcommand{\cF}{{\mathcal F}}
+\newcommand{\cE}{{\mathcal E}}
+\newcommand{\cM}{{\mathcal M}}
+\newcommand{\sign}{\operatorname{sign}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cD}{\mathcal D}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cS}{{\mathcal S}}
+\newcommand{\cX}{{\mathcal X}}
+\newcommand{\cH}{{\mathcal H}}
+\newcommand{\cA}{{\mathcal A}}
+\newcommand{\cG}{{\mathcal G}}
+\newcommand{\cK}{{\mathcal K}}
+\newcommand{\cB}{{\mathcal B}}
+\newcommand{\bR}{{\bf R}}
+\newcommand{\bb}{{\bf b}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\ve}{\operatorname{vec}}
+\newcommand{\cV}{{\mathcal{V}}}
+\newcommand{\bZ}{{\bf Z}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\pr}{\Pi}
+\newcommand{\ps}{\Pi^{s}}
+\newcommand{\pa}{\Pi^{a}}
+\newcommand{\psh}{\hat\Pi^{s}}
+\newcommand{\pah}{\hat\Pi^{a}}
+\newcommand{\w}{w}
+\newcommand{\ws}{w^{s}}%{EP}
+\newcommand{\wa}{w^{a}}
+\newcommand{\wo}{v}
+\newcommand{\woo}{u}
+\newcommand{\wi}{\hat w^{a}}
+\newcommand{\ls}{\lambda^{s}}
+\newcommand{\la}{\lambda^{a}}
+\newcommand{\Li}{L}
+\newcommand{\op}{^\top }
+\newcommand{\esssup}{\operatorname{esssup}}
+\newcommand{\Si}{{\Sigma_R}}
+\newcommand{\Sit}{\Sigma_{R,t}}
+\newcommand{\Ss}{\Sigma_{S}}
+\newcommand{\bS}{{\bf S}}
+\newcommand{\vertiii}[1]{{\left\vert\kern-0.25ex\left\vert\kern-0.25ex\left\vert #1 
+\right\vert\kern-0.25ex\right\vert\kern-0.25ex\right\vert}}
+\newcommand{\bG}{{\bf G}}
+\newcommand{\cC}{\mathcal C}
+\newcommand{\bK}{{\mathbb K}}
+\newcommand{\bN}{{\bf N}}
+\usepackage{ulem}
+\usepackage{bbm}
+\usepackage{color}
+\long\def\cmt#1{{\color{blue}\sf[#1]}}
+
+\usepackage{mathtools}
+% the next command makes only referred equations visible
+%\mathtoolsset{showonlyrefs}
+
+\widowpenalty=10000
+%\orphanpenalty=10000
+\clubpenalty=500
+\hyphenpenalty=500
+
+
+\newcommand{\ascom}[1]{\colorbox{yellow}{\scriptsize{{ [AS}: #1 \textbf{]}}}}
+
+\newcommand{\be}{\begin{equation}}
+\newcommand{\wt}{\tilde \omega}
+\newcommand{\kt}{\tilde k}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\bee}{\begin{equation*}}
+\newcommand{\eee}{\end{equation*}}
+\def\SM#1{{\color [rgb]{0,0.0,0.8} [SM: #1]}}
+\def\FP#1{{\color [rgb]{0,0.8,0.0} [FP: #1]}}
+\newcommand{\sgn}{\textrm{sgn}}
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+\pgfplotsset{compat=1.18}
+\begin{document}
+
+\title{Term Structure of Firm Characteristics and Multi-Horizon Investment}
+
+\author{
+    \begin{tabular}{ccc}
+        Serhiy Kozak & Markus Pelger & Ye Ye \\
+        \textit{University of Maryland} & \textit{Stanford University} & \textit{Stanford University} \\
+        & James Zhang & \\
+        & \textit{University of Maryland} &
+    \end{tabular}
+}
+
+\maketitle
+
+
+\begin{abstract}
+
+\end{abstract}
+
+\newcommand{\keywords}[1]{\textbf{Keywords:} #1}
+\keywords{
+
+}
+
+\newpage
+\section{Introduction} 
+
+\section{From 2D to 3D Factor Models}
+
+\subsection{Notation}
+
+\subsection{The CP/PARAFAC Decomposition}
+
+\subsection{Interpretation of PARAFAC}
+
+\subsection{Other Decompositions}
+
+\section{Methodology}
+
+\section{A Multi-Horizon Perspective}
+
+\subsection{The (Interpretable) Single-Characteristic Tensor Factor Model}
+
+\subsubsection{Lag Loadings and Smoothness}
+
+Show graphs of the first 6 tensor factors illustrating smoothness; talk about functional
+dependency of stock returns on lagged value portfolios being smooth, and relate 
+to Markus' other paper.
+
+\subsubsection{SDF Weights as a Function of Horizon}
+
+
+\subsection{The Full Tensor Factor Model}
+
+We need to figure out why the PooledPCA approach isn't working or if there was a code 
+error because the toy model is very similar although simpler.
+
+\subsubsection{Lag Loadings}
+
+Lag loadings are a lot more shaped how we expect signals to die out; just linear-ish decreasing,
+but I still do need to check the generalized correlations here. 
+
+\subsubsection{SDF Weights as a Function of Horizon}
+
+
+\citep{complexity}
+
+\section{Data}
+
+\section{Empirical Findings}
+
+\subsection{Variant Models on the Tensor Framework}
+
+\subsection{Model Performance}
+
+Report the aforementioned statistics, Multihorizon Sharpe Ratio plots that we 
+already have. 
+
+Also interested in pairwise model comparisons for the tensor model 1-month returns to 
+determine alpha of one model over every other -- interested to see the lagged factors 
+compare vs traditional factors extracted from 2D factor models
+
+\section{Conclusion}
+
+\section{Appendix A}
+
+\newpage
+
+\clearpage
+\bibliographystyle{aer}
+\bibliography{biblio}
+
+
+\end{document}
