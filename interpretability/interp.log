@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.21)  10 MAR 2025 15:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.21)  1 APR 2025 11:26
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -661,150 +661,150 @@ LaTeX Warning: No \author given.
 \openout6 = `interp.lof'.
 
  [2]
-Overfull \hbox (7.95622pt too wide) in paragraph at lines 87--97
+Overfull \hbox (7.95622pt too wide) in paragraph at lines 91--101
  [][] 
  []
 
 [3{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-<figures/corr.png, id=128, 1156.32pt x 289.08pt>
+<figures/corr.png, id=134, 1156.32pt x 289.08pt>
 File: figures/corr.png Graphic file (type png)
 <use figures/corr.png>
-Package pdftex.def Info: figures/corr.png  used on input line 114.
+Package pdftex.def Info: figures/corr.png  used on input line 118.
 (pdftex.def)             Requested size: 345.0pt x 86.24828pt.
-<figures/B_1.png, id=130, 1084.05pt x 867.24pt>
+<figures/B_1.png, id=136, 1084.05pt x 867.24pt>
 File: figures/B_1.png Graphic file (type png)
 <use figures/B_1.png>
-Package pdftex.def Info: figures/B_1.png  used on input line 128.
+Package pdftex.def Info: figures/B_1.png  used on input line 132.
 (pdftex.def)             Requested size: 293.2521pt x 234.59462pt.
-<figures/B_3.png, id=131, 1084.05pt x 867.24pt>
+<figures/B_3.png, id=137, 1084.05pt x 867.24pt>
 File: figures/B_3.png Graphic file (type png)
 <use figures/B_3.png>
-Package pdftex.def Info: figures/B_3.png  used on input line 134.
+Package pdftex.def Info: figures/B_3.png  used on input line 138.
 (pdftex.def)             Requested size: 293.2521pt x 234.59462pt.
  [4 <./figures/corr.png>]
-<figures/B_5.png, id=137, 1084.05pt x 867.24pt>
+<figures/B_5.png, id=144, 1084.05pt x 867.24pt>
 File: figures/B_5.png Graphic file (type png)
 <use figures/B_5.png>
-Package pdftex.def Info: figures/B_5.png  used on input line 140.
+Package pdftex.def Info: figures/B_5.png  used on input line 144.
 (pdftex.def)             Requested size: 293.2521pt x 234.59462pt.
-<figures/B_10.png, id=138, 1084.05pt x 867.24pt>
+<figures/B_10.png, id=145, 1084.05pt x 867.24pt>
 File: figures/B_10.png Graphic file (type png)
 <use figures/B_10.png>
-Package pdftex.def Info: figures/B_10.png  used on input line 146.
+Package pdftex.def Info: figures/B_10.png  used on input line 150.
 (pdftex.def)             Requested size: 293.2521pt x 234.59462pt.
  [5 <./figures/B_1.png> <./figures/B_3.png>]
-<figures/B_15.png, id=145, 1084.05pt x 867.24pt>
+<figures/B_15.png, id=152, 1084.05pt x 867.24pt>
 File: figures/B_15.png Graphic file (type png)
 <use figures/B_15.png>
-Package pdftex.def Info: figures/B_15.png  used on input line 152.
+Package pdftex.def Info: figures/B_15.png  used on input line 156.
 (pdftex.def)             Requested size: 293.2521pt x 234.59462pt.
-<figures/B_20.png, id=146, 1084.05pt x 867.24pt>
+<figures/B_20.png, id=153, 1084.05pt x 867.24pt>
 File: figures/B_20.png Graphic file (type png)
 <use figures/B_20.png>
-Package pdftex.def Info: figures/B_20.png  used on input line 158.
+Package pdftex.def Info: figures/B_20.png  used on input line 162.
 (pdftex.def)             Requested size: 293.2521pt x 234.59462pt.
  [6 <./figures/B_5.png> <./figures/B_10.png>]
-<figures/W_gc_1.png, id=153, 1291.4649pt x 852.786pt>
+<figures/W_gc_1.png, id=160, 1291.4649pt x 852.786pt>
 File: figures/W_gc_1.png Graphic file (type png)
 <use figures/W_gc_1.png>
-Package pdftex.def Info: figures/W_gc_1.png  used on input line 170.
+Package pdftex.def Info: figures/W_gc_1.png  used on input line 174.
 (pdftex.def)             Requested size: 293.2521pt x 193.63826pt.
  [7 <./figures/B_15.png> <./figures/B_20.png>]
-<figures/W_gc_2.png, id=161, 1291.4649pt x 852.786pt>
+<figures/W_gc_2.png, id=168, 1291.4649pt x 852.786pt>
 File: figures/W_gc_2.png Graphic file (type png)
 <use figures/W_gc_2.png>
-Package pdftex.def Info: figures/W_gc_2.png  used on input line 176.
+Package pdftex.def Info: figures/W_gc_2.png  used on input line 180.
 (pdftex.def)             Requested size: 293.2521pt x 193.63826pt.
  [8 <./figures/W_gc_1.png> <./figures/W_gc_2.png>]
-<figures/W_1.png, id=169, 1300.86pt x 1156.32pt>
+<figures/W_1.png, id=175, 1300.86pt x 1156.32pt>
 File: figures/W_1.png Graphic file (type png)
 <use figures/W_1.png>
-Package pdftex.def Info: figures/W_1.png  used on input line 187.
+Package pdftex.def Info: figures/W_1.png  used on input line 191.
 (pdftex.def)             Requested size: 293.2521pt x 260.6548pt.
-<figures/W_1_line.png, id=170, 1292.9103pt x 859.2903pt>
+<figures/W_1_line.png, id=176, 1292.9103pt x 859.2903pt>
 File: figures/W_1_line.png Graphic file (type png)
 <use figures/W_1_line.png>
-Package pdftex.def Info: figures/W_1_line.png  used on input line 193.
+Package pdftex.def Info: figures/W_1_line.png  used on input line 197.
 (pdftex.def)             Requested size: 293.2521pt x 194.89226pt.
-<figures/W_3.png, id=171, 1300.86pt x 1156.32pt>
+<figures/W_3.png, id=177, 1300.86pt x 1156.32pt>
 File: figures/W_3.png Graphic file (type png)
 <use figures/W_3.png>
-Package pdftex.def Info: figures/W_3.png  used on input line 199.
+Package pdftex.def Info: figures/W_3.png  used on input line 203.
 (pdftex.def)             Requested size: 293.2521pt x 260.6548pt.
  [9 <./figures/W_1.png>]
-<figures/W_3_line.png, id=178, 1293.633pt x 859.2903pt>
+<figures/W_3_line.png, id=184, 1293.633pt x 859.2903pt>
 File: figures/W_3_line.png Graphic file (type png)
 <use figures/W_3_line.png>
-Package pdftex.def Info: figures/W_3_line.png  used on input line 205.
+Package pdftex.def Info: figures/W_3_line.png  used on input line 209.
 (pdftex.def)             Requested size: 293.2521pt x 194.78737pt.
  [10 <./figures/W_1_line.png> <./figures/W_3.png>]
-<figures/W_5.png, id=185, 1300.86pt x 1156.32pt>
+<figures/W_5.png, id=191, 1300.86pt x 1156.32pt>
 File: figures/W_5.png Graphic file (type png)
 <use figures/W_5.png>
-Package pdftex.def Info: figures/W_5.png  used on input line 212.
+Package pdftex.def Info: figures/W_5.png  used on input line 216.
 (pdftex.def)             Requested size: 293.2521pt x 260.6548pt.
-<figures/W_5_line.png, id=186, 1293.633pt x 859.2903pt>
+<figures/W_5_line.png, id=192, 1293.633pt x 859.2903pt>
 File: figures/W_5_line.png Graphic file (type png)
 <use figures/W_5_line.png>
-Package pdftex.def Info: figures/W_5_line.png  used on input line 218.
+Package pdftex.def Info: figures/W_5_line.png  used on input line 222.
 (pdftex.def)             Requested size: 293.2521pt x 194.78737pt.
  [11 <./figures/W_3_line.png> <./figures/W_5.png>]
-<figures/W_10.png, id=193, 1300.86pt x 1156.32pt>
+<figures/W_10.png, id=199, 1300.86pt x 1156.32pt>
 File: figures/W_10.png Graphic file (type png)
 <use figures/W_10.png>
-Package pdftex.def Info: figures/W_10.png  used on input line 225.
+Package pdftex.def Info: figures/W_10.png  used on input line 229.
 (pdftex.def)             Requested size: 293.2521pt x 260.6548pt.
-<figures/W_10_line.png, id=194, 1293.633pt x 859.2903pt>
+<figures/W_10_line.png, id=200, 1293.633pt x 859.2903pt>
 File: figures/W_10_line.png Graphic file (type png)
 <use figures/W_10_line.png>
-Package pdftex.def Info: figures/W_10_line.png  used on input line 231.
+Package pdftex.def Info: figures/W_10_line.png  used on input line 235.
 (pdftex.def)             Requested size: 293.2521pt x 194.78737pt.
  [12 <./figures/W_5_line.png> <./figures/W_10.png>]
-<figures/WB_36_unnorm.png, id=201, 1300.86pt x 1589.94pt>
+<figures/WB_36_unnorm.png, id=207, 1300.86pt x 1589.94pt>
 File: figures/WB_36_unnorm.png Graphic file (type png)
 <use figures/WB_36_unnorm.png>
-Package pdftex.def Info: figures/WB_36_unnorm.png  used on input line 259.
+Package pdftex.def Info: figures/WB_36_unnorm.png  used on input line 263.
 (pdftex.def)             Requested size: 345.0pt x 421.64748pt.
  [13 <./figures/W_10_line.png>] [14 <./figures/WB_36_unnorm.png>]
-<figures/WB_60_unnorm.png, id=218, 1300.86pt x 1589.94pt>
+<figures/WB_60_unnorm.png, id=221, 1300.86pt x 1589.94pt>
 File: figures/WB_60_unnorm.png Graphic file (type png)
 <use figures/WB_60_unnorm.png>
-Package pdftex.def Info: figures/WB_60_unnorm.png  used on input line 276.
+Package pdftex.def Info: figures/WB_60_unnorm.png  used on input line 280.
 (pdftex.def)             Requested size: 345.0pt x 421.64748pt.
  [15 <./figures/WB_60_unnorm.png>]
-<figures/WB_90_unnorm.png, id=224, 1300.86pt x 1589.94pt>
+<figures/WB_90_unnorm.png, id=227, 1300.86pt x 1589.94pt>
 File: figures/WB_90_unnorm.png Graphic file (type png)
 <use figures/WB_90_unnorm.png>
-Package pdftex.def Info: figures/WB_90_unnorm.png  used on input line 290.
+Package pdftex.def Info: figures/WB_90_unnorm.png  used on input line 294.
 (pdftex.def)             Requested size: 345.0pt x 421.64748pt.
-<figures/WB_120_unnorm.png, id=225, 1300.86pt x 1589.94pt>
+<figures/WB_120_unnorm.png, id=228, 1300.86pt x 1589.94pt>
 File: figures/WB_120_unnorm.png Graphic file (type png)
 <use figures/WB_120_unnorm.png>
-Package pdftex.def Info: figures/WB_120_unnorm.png  used on input line 297.
+Package pdftex.def Info: figures/WB_120_unnorm.png  used on input line 301.
 (pdftex.def)             Requested size: 345.0pt x 421.64748pt.
  [16 <./figures/WB_90_unnorm.png>]
-<figures/WB_36_norm.png, id=231, 1300.86pt x 1589.94pt>
+<figures/WB_36_norm.png, id=234, 1300.86pt x 1589.94pt>
 File: figures/WB_36_norm.png Graphic file (type png)
 <use figures/WB_36_norm.png>
-Package pdftex.def Info: figures/WB_36_norm.png  used on input line 310.
+Package pdftex.def Info: figures/WB_36_norm.png  used on input line 314.
 (pdftex.def)             Requested size: 345.0pt x 421.64748pt.
  [17 <./figures/WB_120_unnorm.png>]
-<figures/WB_60_norm.png, id=237, 1300.86pt x 1589.94pt>
+<figures/WB_60_norm.png, id=240, 1300.86pt x 1589.94pt>
 File: figures/WB_60_norm.png Graphic file (type png)
 <use figures/WB_60_norm.png>
-Package pdftex.def Info: figures/WB_60_norm.png  used on input line 317.
+Package pdftex.def Info: figures/WB_60_norm.png  used on input line 321.
 (pdftex.def)             Requested size: 345.0pt x 421.64748pt.
  [18 <./figures/WB_36_norm.png>]
-<figures/WB_90_norm.png, id=243, 1300.86pt x 1589.94pt>
+<figures/WB_90_norm.png, id=246, 1300.86pt x 1589.94pt>
 File: figures/WB_90_norm.png Graphic file (type png)
 <use figures/WB_90_norm.png>
-Package pdftex.def Info: figures/WB_90_norm.png  used on input line 324.
+Package pdftex.def Info: figures/WB_90_norm.png  used on input line 328.
 (pdftex.def)             Requested size: 345.0pt x 421.64748pt.
  [19 <./figures/WB_60_norm.png>]
-<figures/WB_120_norm.png, id=250, 1300.86pt x 1589.94pt>
+<figures/WB_120_norm.png, id=253, 1300.86pt x 1589.94pt>
 File: figures/WB_120_norm.png Graphic file (type png)
 <use figures/WB_120_norm.png>
-Package pdftex.def Info: figures/WB_120_norm.png  used on input line 331.
+Package pdftex.def Info: figures/WB_120_norm.png  used on input line 335.
 (pdftex.def)             Requested size: 345.0pt x 421.64748pt.
  [20 <./figures/WB_90_norm.png>] [21 <./figures/WB_120_norm.png>] [22] (./interp.aux)
  ***********
@@ -815,18 +815,18 @@ Package rerunfilecheck Info: File `interp.out' has not changed.
 (rerunfilecheck)             Checksum: D7A90822AE89237A471CB0FE9AC8D05A;2084.
  ) 
 Here is how much of TeX's memory you used:
- 32573 strings out of 474222
- 767755 string characters out of 5748733
+ 32577 strings out of 474222
+ 767835 string characters out of 5748733
  1941975 words of memory out of 5000000
- 54238 multiletter control sequences out of 15000+600000
+ 54240 multiletter control sequences out of 15000+600000
  571692 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  114i,17n,121p,790b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on interp.pdf (22 pages, 4901782 bytes).
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on interp.pdf (22 pages, 4913070 bytes).
 PDF statistics:
- 351 PDF objects out of 1000 (max. 8388607)
- 242 compressed objects within 3 object streams
- 61 named destinations out of 1000 (max. 500000)
+ 358 PDF objects out of 1000 (max. 8388607)
+ 247 compressed objects within 3 object streams
+ 63 named destinations out of 1000 (max. 500000)
  210 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -47,13 +47,6 @@
 
 \listoffigures
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.85\linewidth]{full/ff_tensor_Precise.png}
-%     \caption{(FF5) Precise Tensor Factor Model: Full-Sample Sharpe Ratio}
-%     \label{fig:ff-primary-precise}
-% \end{figure}
-
 \newpage
 
 \section{Economic Interpretation}
@@ -68,11 +61,22 @@ components of the model are estimated on the full-sample, unless other specified
 Recall that $L = 1$ is a simple factor model where no lagged characteristics are used. There is extensive research on this. 
 We also want to understand what happens when $N = 1$ ie. we have a single-characteristic factor model $\implies$
 this is essentially just a PCA on the lagged value portfolios, but it omits an interesting formula, some useful intuition, and a nice equivalence 
-that we can establish before talking about the differences between PCA and CP in the next section
+that we can establish before talking about the differences between PCA and CP in the next section. In fact, the formula becomes relevant if we impose orthogonality in the time series factors dimension. 
 
 \begin{itemize}
     \item SDF weights in this case and the closed-form formula; this just occurs when the factors are orthogonal, 
-    but in practice with more characteristics, the modeling becomes complex and the factors are not orthogonal
+    but in practice with more characteristics, the modeling becomes complex and the factors are not orthogonal. Actually, if we impose orthogonality
+    in mode $0$ ie. the factors mode, then we can obtain a nice formula even in the case with all characteristics
+    \begin{align}
+        \omega^S = \left( \left( \sum_{l=1}^S W_l W_l^\top\right) \cdot \text{Var}_t(F_t) \right)^{-1} \text{diag}\left(\sum_{l=1}^S W_l \right) \mathbb{E}_t [F_t]\\
+    \end{align}
+    If time series factors are orthogonal, then this formula simplifies greatly ie. 
+    \begin{align*}
+        \omega^S &= \left( \sum_{l=1}^S \text{diag}(W_l \cdot \text{diag}(\text{Var}_t(F_t)) \cdot W_l) \right)^{-1}  \left( \sum_{l=1}^S W_l \cdot \mathbb{E}_t [F_t]\right)\\
+        &= \dfrac{\bar{F}_t \cdot \sum_{l=1}^S W_l}{\text{diag}(\text{Var}_t(F_t)) \cdot \sum_{l=1}^S W_l^2}
+    \end{align*}
+    This simplified formula arises due to the fact that correlations, and thus covariances, between factors is $0$ which allows our 
+    covariance matrix to be orthogonal and easily invertible. 
     \item We rediscover level, slope and curvature for equities $\implies$ show a 2x3 graph of the first 6 factors
 \end{itemize}
 

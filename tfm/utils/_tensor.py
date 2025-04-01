@@ -53,6 +53,11 @@ def get_cov_approx(FW: jnp.ndarray, idx_s: int):
 @partial(jax.jit, backend=main_compute_device, static_argnums=(2))
 def get_mv_weights(mu: jnp.ndarray, cov: jnp.ndarray, K: int, idx_s: int):
     return jnp.linalg.inv(cov[idx_s]) @ mu[idx_s]
+
+@partial(jax.jit, backend=main_compute_device)
+def get_mv_weights_ortho(means: jnp.ndarray, variances: jnp.ndarray, W2: jnp.ndarray, i: int):
+    """Note that W1 and W2 already have cumsum applied to them"""
+    return (means[i]) / (variances[i] * W2[i])
     
 @partial(jax.jit, backend=main_compute_device)
 def get_X_fitted_oos(W: WTensor, B: BTensor, S: STensor, F_oos: jnp.ndarray, i: int):

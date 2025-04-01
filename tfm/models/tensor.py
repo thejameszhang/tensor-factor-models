@@ -6,7 +6,8 @@ from functools import partial
 import jax
 import jax.numpy as jnp
 from tfm.parafac_jax import parafac_enhanced, normalize_factors
-from tfm.parafac_admm import parafac_admm
+# from tfm.parafac_admm import parafac_admm
+from tfm.parafac_orthogonal import *
 from tfm.utils._tensor import *
 from tfm.utils._constants import *
 from tfm.utils._cov import newey_west_cov_jax
@@ -37,12 +38,19 @@ def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray,
     X_fit = jax.lax.dynamic_slice(X_log, start_indices=(idx_window, 0, 0), slice_sizes=(window_size, lag, N))
     X_next = jax.lax.dynamic_slice(X_log, start_indices=(idx_window + window_size, 0, 0), slice_sizes=(max_horizon, lag, N))
     
-    weights, factors = parafac_enhanced(
-        tensor=X_fit,
-        rank=K,
+    # weights, factors = parafac_enhanced(
+    #     tensor=X_fit,
+    #     rank=K,
+    #     random_state=random_seed,
+    #     n_iter_max=n_iter_max,
+    #     fix_intercept_mode=1,
+    # )
+    weights, factors = parafac_orthogonal(
+        tensor=X_fit, 
+        rank=K, 
+        orthogonal_mode=0,
         random_state=random_seed,
-        n_iter_max=n_iter_max,
-        fix_intercept_mode=1,
+        n_iter_max=n_iter_max
     )
     # weights, factors = parafac_admm(
     #     tensor=X_fit,
@@ -80,7 +88,10 @@ def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray,
     mv_tfm_naive = jnp.tile(mv_tfm[0][None, :], (max_horizon, 1)) # dim: (max_horizon, K)
     ret_tfm_naive = (FW_next * mv_tfm_naive).sum(axis=1) # dim: (max_horizon)
 
-    return ret_tfm, ret_naive, ret_tfm_naive, W, F, B, mv_tfm
+    # 4. If factors are orthogonal, covariances are 0 and we're left with just variances 
+    mv_ortho = (mu_tfm / (jnp.var(F, axis=0) * jnp.cumsum(W * W, axis=0)))[:max_horizon] # dim: (max_horizon, K)
+    ret_ortho = (FW_next * mv_ortho).sum(axis=1) # dim: (max_horizon)
+    return ret_tfm, ret_naive, ret_tfm_naive, ret_ortho, W, F, B, mv_tfm
 
 
 def Tensor_One_Window_One_K(X_fit: jnp.ndarray, 
