@@ -11,6 +11,7 @@ from tfm.parafac_orthogonal import *
 from tfm.utils._tensor import *
 from tfm.utils._constants import *
 from tfm.utils._cov import newey_west_cov_jax
+from tfm.utils._pca import RPPCA, get_multiperiod_returns
 
 @partial(jax.jit, backend=main_compute_device, static_argnums=(2, 3, 4, 5, 6))
 def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray, 
@@ -38,28 +39,13 @@ def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray,
     X_fit = jax.lax.dynamic_slice(X_log, start_indices=(idx_window, 0, 0), slice_sizes=(window_size, lag, N))
     X_next = jax.lax.dynamic_slice(X_log, start_indices=(idx_window + window_size, 0, 0), slice_sizes=(max_horizon, lag, N))
     
-    # weights, factors = parafac_enhanced(
-    #     tensor=X_fit,
-    #     rank=K,
-    #     random_state=random_seed,
-    #     n_iter_max=n_iter_max,
-    #     fix_intercept_mode=1,
-    # )
-    weights, factors = parafac_orthogonal(
-        tensor=X_fit, 
-        rank=K, 
-        orthogonal_mode=0,
+    weights, factors = parafac_enhanced(
+        tensor=X_fit,
+        rank=K,
         random_state=random_seed,
-        n_iter_max=n_iter_max
+        n_iter_max=n_iter_max,
+        fix_intercept_mode=1,
     )
-    # weights, factors = parafac_admm(
-    #     tensor=X_fit,
-    #     rank=K,
-    #     l1_reg=lasso
-    # )
-    # one_lag_weights = factors[1][0, :][None, :] + 1e-12
-    # factors[1] /= one_lag_weights
-    # factors[0] *= one_lag_weights
     
     # Extract and normalize factors
     factors = dict(zip(['F','W','B'], factors))
@@ -88,11 +74,86 @@ def Tensor_Multiperiod_Unmapped_Monthly(X_log: jnp.ndarray,
     mv_tfm_naive = jnp.tile(mv_tfm[0][None, :], (max_horizon, 1)) # dim: (max_horizon, K)
     ret_tfm_naive = (FW_next * mv_tfm_naive).sum(axis=1) # dim: (max_horizon)
 
-    # 4. If factors are orthogonal, covariances are 0 and we're left with just variances 
-    mv_ortho = (mu_tfm / (jnp.var(F, axis=0) * jnp.cumsum(W * W, axis=0)))[:max_horizon] # dim: (max_horizon, K)
-    ret_ortho = (FW_next * mv_ortho).sum(axis=1) # dim: (max_horizon)
-    return ret_tfm, ret_naive, ret_tfm_naive, ret_ortho, W, F, B, mv_tfm
+    # 5. Markowitz
+    if K > 1:
+        mu_markowitz = jnp.mean(F, axis=0) # dim: (K,)
+        var_markowitz = jnp.cov(F.T) # dim: (K, K)
+        mv_markowitz = jnp.linalg.inv(var_markowitz) @ mu_markowitz # dim: (K,)
+    else:
+        mv_markowitz = jnp.expand_dims(jnp.mean(F) / jnp.var(F), axis=-1)
+    ret_markowitz = (FW_next * mv_markowitz).sum(axis=1) # dim: (max_horizon)
 
+    # 4. If factors are orthogonal, covariances are 0 and we're left with just variances 
+    weights, factors = parafac_orthogonal(
+        tensor=X_fit, 
+        rank=K, 
+        orthogonal_mode=0,
+        fixed_intercept_mode=1,
+        random_state=random_seed,
+        n_iter_max=n_iter_max
+    )
+    # Extract and normalize factors
+    factors = dict(zip(['F','W','B'], factors))
+    factors['S'] = weights
+    factors = normalize_factors(factors, reorder=True)
+    Fo, Wo, Bo, So = [factors[key] for key in ['F','W','B','S']] 
+
+    Z_fit = jax.vmap(compute_Z_row, in_axes=(None, None, None, 0))(Wo, Bo, So, jnp.arange(K)) # dim: (K, NL)
+    Fo_next = jax.vmap(get_F_next, in_axes=(None, None, 0))(Z_fit, X_next, jnp.arange(max_horizon)) # dim: (max_horizon, K)
+    FWo_next = (Fo_next * Wo[:max_horizon, :]).cumsum(axis=0) # dim: (max_horizon, K)
+    mu_ortho = jnp.multiply(jnp.cumsum(Wo, axis=0), jnp.mean(Fo, axis=0)) # dim: (lag, K)
+    mv_ortho = (mu_ortho / (jnp.var(Fo, axis=0) * jnp.cumsum(Wo * Wo, axis=0)))[:max_horizon] # dim: (max_horizon, K)
+    ret_ortho = (FWo_next * mv_ortho).sum(axis=1) # dim: (max_horizon)
+
+    # 5. Markowitz
+    if K > 1:
+        mv_markowitz_ortho = jnp.linalg.inv(jnp.cov(Fo.T)) @ jnp.mean(Fo, axis=0) # dim: (K,)
+    else:
+        mv_markowitz_ortho = jnp.expand_dims(jnp.mean(Fo) / jnp.var(Fo), axis=-1)
+    ret_markowitz_ortho = (FWo_next * mv_markowitz_ortho).sum(axis=1) # dim: (max_horizon)
+    
+    return ret_tfm, ret_naive, ret_tfm_naive, ret_ortho, ret_markowitz, ret_markowitz_ortho, W, F, B, mv_tfm, mv_ortho, Wo, Fo, Bo
+
+@partial(jax.jit, backend=main_compute_device, static_argnums=(2, 3, 4, 5))
+def Tensor_Model_With_RPPCA_Factors(X_log: jnp.ndarray, 
+                                idx_window: int, 
+                                K: int, 
+                                window_size: int,
+                                lag: int,
+                                max_horizon: int):
+
+    T, _, N  = X_log.shape
+    X_fit = jax.lax.dynamic_slice(X_log, start_indices=(idx_window, 0, 0), slice_sizes=(window_size, lag, N))
+    X_next = jax.lax.dynamic_slice(X_log, start_indices=(idx_window + window_size, 0, 0), slice_sizes=(max_horizon, lag, N))
+    
+    factors_pca = RPPCA(X_fit.reshape(window_size, -1), gamma=-1, K=K)[0]
+    
+    weights, factors = parafac_enhanced(
+        tensor=X_fit,
+        rank=K,
+        fixed_modes=(0, factors_pca),
+        random_state=random_seed,
+        n_iter_max=n_iter_max,
+        fix_intercept_mode=1,
+    )
+    
+    # Extract and normalize factors
+    factors = dict(zip(['F','W','B'], factors))
+    factors['S'] = weights
+    factors = normalize_factors(factors, reorder=True)
+    F, W, B, S = [factors[key] for key in ['F','W','B','S']] 
+
+    Z_fit = jax.vmap(compute_Z_row, in_axes=(None, None, None, 0))(W, B, S, jnp.arange(K)) # dim: (K, NL)
+    F_next = jax.vmap(get_F_next, in_axes=(None, None, 0))(Z_fit, X_next, jnp.arange(max_horizon)) # dim: (max_horizon, K)
+    FW_next = (F_next * W[:max_horizon, :]).cumsum(axis=0) # dim: (max_horizon, K)
+    
+    # 1. Get mean variance weights on basis assets - approximate solution using the tensor model 
+    mu_tfm = jnp.multiply(jnp.cumsum(W, axis=0), jnp.mean(F, axis=0)) # dim: (lag, K)
+    var_tfm = jnp.cumsum(jax.vmap(outerW, in_axes=(None, 0))(W, jnp.arange(lag)), axis=0) * jnp.cov(F.T, bias=True) # dim: (lag, K, K)
+    mv_tfm = jax.vmap(get_mv_weights, in_axes=(None, None, None, 0))(mu_tfm, var_tfm, K, jnp.arange(max_horizon)) # dim: (max_horizon, K)
+    ret_tfm = (FW_next * mv_tfm).sum(axis=1) # dim: (max_horizon)
+    
+    return ret_tfm, W, F, B
 
 def Tensor_One_Window_One_K(X_fit: jnp.ndarray, 
                             X_oos: jnp.ndarray, 

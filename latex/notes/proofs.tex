@@ -1,0 +1,141 @@
+% \begin{lemma} \label{misc-lemma}
+%     For any two real symmetric square matrices $A, B \in \R^{N \times N}$ and $y \in \R^N$
+%     \[(A \cdot B) y = diag(A D_y B^T)\]
+% \begin{proof}
+%     Note that the element of $(A \cdot B)_{i, j} = A_{i, j} \cdot B_{i, j}$
+%     Furthermore, the product with vector $y$ results in a vector $v$ where 
+%     \[v_i = \sum_j (A_{i, j} \cdot B_{i, j}) \cdot y_j\]
+%     Now observe the other side. $D_y$ is a diagonal matrix, so $AD_y$ scales each column $j$ 
+%     of $A$ by $y_j$; thus, $(AD_y)_{i, j} = A_{i, j} \cdot y_j$. $B^\top$ is the transpose of $B$
+%     so $(B^\top)_{j, i} = B_{i, j}$. This product $AD_y B^\top$ results in a matrix $M$
+%     where each $M_{i, i}$ is 
+%     \[M_{i, i} = \sum_j (A_{i, j} \cdot y_j) \cdot B_{i, j}\]
+%     Thus, $v = diag(M)$ and so we are done. 
+% \end{proof}
+% \end{lemma}
+
+\begin{lemma} \label{elementwise-ruins-everything}
+    There does not exist a closed-form solution of $(A \cdot B)^{-1}$ where 
+    $A, B \in \R^{N \times N}$ and are real and symmetric and $\cdot$ is element-wise multiplication. 
+    \begin{proof}
+        Consider a counter-example where
+        \begin{align*}
+            A = \begin{pmatrix}
+                1 & 0\\
+                0 & 1
+            \end{pmatrix} && B = \begin{pmatrix}
+                0 & 1\\
+                1 & 0
+            \end{pmatrix}
+        \end{align*}
+        Clearly, $A$ and $B$ are both invertible, but $(A \cdot B)$ is not invertible, 
+        and thus we cannot even guarantee existence, much less uniqueness.
+    \end{proof}
+\end{lemma}
+    
+\begin{lemma} \label{outer-prod-elementwise-trick}
+    For two vectors $x, y \in \R^N$ and a square matrix $A \in \R^{N \times N}$, then 
+    \[(yx^\top) \cdot A = D_y A D_x^\top\]
+    where $D_y \in \R^{N \times N}$ matrix the elements of $y$ along the diagonal and $0$ elsewhere. 
+
+    \begin{proof}
+        Omitted. Found on Wikipedia page for Hadamard products.
+    \end{proof}
+\end{lemma}
+
+% \begin{lemma}[Miller's Lemma]
+%     If $G$ is rank $n$ and $H$ is rank one, then 
+%     \[(G + H)^{-1} = G^{-1} - \frac{1}{1 + g}G^{-1} H G^{-1}\]
+%     where $g = \text{tr}(HG^{-1})$
+
+%     \begin{proof}
+%         See Miller.
+
+%         In our case, $G$ would have the form $G = D_{W_l} \Sigma D_{W_l}$ and so substituting this into the above yields 
+%         \begin{align}
+%             (G + H)^{-1} = D_{W_l}^{-1} \Sigma^{-1} D_{W_l}^{-1} - \frac{1}{1 + g} D_{W_l}^{-1} \Sigma^{-1} D_{W_l}^{-1} H D_{W_l}^{-1} \Sigma^{-1} D_{W_l}^{-1}
+%         \end{align}
+%     \end{proof}
+% \end{lemma}
+
+% \begin{theorem}[Miller's Theorem]
+%     Let $G$ and $G + H$ be nonsingular matrices and let $H$ have positive rank $r$. Let $H = E_1 + E_2 + \cdots + E_r $, 
+%     where each $E_k $ has rank one and $C_{k+1} = G + E_1 + \cdots + E_k$ is nonsingular for $k = 1, \ldots, r$. Then if $C_1 = G$,
+% \[ C_{k+1}^{-1} = C_k^{-1} - \nu_k C_k^{-1} E_k C_k^{-1}, \quad k = 1, \ldots, r \]
+% where
+% \[ \nu_k = \frac{1}{1 + \text{tr} \, C_k^{-1} E_k}. \]
+% In particular,
+% \[ (G + H)^{-1} = C_r^{-1} - \nu_r C_r^{-1} E_r C_r^{-1}. \]
+
+% \begin{proof}
+%     To prove this result we first write $C_2 = C_1 + E_1 = G + E_1$ and recall that $G$ and $C_2$ are nonsingular. Then by the Lemma,
+%     \[C_2^{-1} = G^{-1} - \nu_1 G^{-1} E_1 G^{-1}\]
+%     and we have calculated $C_2^{-1} $in terms of $G^{-1}$. Now $C_3 = G + E_1 + E_2 = C_2 + E_2$. Hence since $C_2 $and $C_3$ are nonsingular, we again may invoke the Lemma to write $C_3^{-1} $in terms of $C_2^{-1} $
+%     \[ C_3^{-1} = C_2^{-1} - \nu_2 C_2^{-1} E_2 C_2^{-1}. \]
+%     But $C_2^{-1}$, and if we continue this process $r $times (where $r $is the rank of $H$) we obtain
+%     \[ C_{r+1}^{-1} = C_r^{-1} - \nu_r C_r^{-1} E_r C_r^{-1}. \]
+%     But $C_{r+1} = G + H$, and thus our Theorem is proved.
+% \end{proof}
+% \end{theorem}
+
+% \begin{theorem}[Henderson and Searle Theorem]
+%     If $A$ and $B$ are symmetric, (as they are in our case), then 
+    
+
+%     \begin{proof}
+%         Omitted. In 
+%     \end{proof}
+% \end{theorem}
+
+
+\begin{note}[Multihorizon Covariance Matrix]
+We want to analyze equation \ref{cov}.
+
+\begin{proof}[Solution]
+By Lemma \ref{outer-prod-elementwise-trick}, each term in the summation simplifes such that
+\[\left( \left( \sum_{l=1}^S (W_l W_l^\top)\right) \cdot \text{Var}(F_t)\right)^{-1}  = \left( \sum_{l=1}^S D_{W_l} \text{Var}(F_t) D_{W_l}\right)^{-1}\]
+Now consider the eigendecomposition of the covariance matrix (which is positive semi-definite) $\text{Var}(F_t) = Q\Lambda Q^\top$
+where the columns of $Q$ are the eigenvectors. 
+\[\left( \sum_{l=1}^S D_{W_l} Q \Lambda Q^\top D_{W_l}\right)^{-1}\]
+If all of the eigenvalues in $\Lambda$ are distinct (which should be reasonable despite the 
+lack of orthogonality between the factors in PARAFAC), then $Q$ is orthogonal and by definition, 
+$Q^\top = Q^{-1}$. Thus, $Q^\top D_{W_l} = Q^{-1} D_{W_l}$ maps each of the columns of $D_{W_l}$
+onto the eigenspace spanned by the eigenvectors of the covariance matrix. 
+
+The mapping of $D_{W_l}$ onto the eigenspace spanned by the covariance matrix’s eigenvectors suggests a powerful economic interpretation. 
+This transformation effectively decomposes the investment horizon weights into the same coordinate system where risk factors naturally vary. 
+This means we’re aligning our investment horizons with the fundamental modes of variation in the underlying factors.
+
+Let $X_l = Q^T D_{W_l}$, which is now neither diagonal orthogonal, or symmetric. Now we have 
+\[\left( \sum_{l=1}^S X_l^\top \Lambda X_l \right)^{-1}\]
+
+Note that for some $l$, $X_l^\top \Lambda X_l$ is a positive semi-definite matrix because the eigenvalues 
+in $\Lambda$ are guaranteed to be nonnegative, and furthermore, the sum of PSD matrices is still PSD. The fact that the sum of PSD matrices remains PSD ensures that the portfolio's risk remains 
+well-defined and manageable. This is crucial in mean-variance optimization, as it guarantees that the covariance matrix used in the optimization process is valid.
+\end{proof}
+\end{note}
+
+
+
+\begin{note}[PSD Stability]
+
+
+\begin{proof}[Solution]
+
+Recall that the covariance matrix is PSD, so eigenvalues are all nonnegative, and $\Lambda$ is diagonal and therefore symmetric.
+The sum of PSD matrices is still PSD. Alternatively, just from \ref{cov} each element in the outer product is positive 
+so when multiplied by the covariance matrix, one would propose that the result was PSD but this shows it. 
+
+\hfill
+
+We have the following equality
+
+Further exploring, this could be a deadend, is there some nice assumption
+\begin{align*}
+    \left( \sum_{l=1}^S X_l^\top \Lambda X_l \right)^{(i, j)} &= \sum_{k=1}^K \Lambda_k \left(\sum_{l=1}^S X_l^{(k, i)} X_l^{(k, j)}\right)\\
+    &= \sum_{k=1}^K \Lambda_k 
+\end{align*}
+Each $X_l^{(i, j)} = \sum_{k=1}^K Q^{(k, i)} D_{W_l}^{(k, j)} $
+\end{proof}
+\end{note}
+

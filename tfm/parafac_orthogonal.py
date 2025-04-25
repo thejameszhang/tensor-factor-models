@@ -1,6 +1,6 @@
 import jax
 import jax.numpy as jnp
-from typing import Tuple, List, Optional, Dict
+from typing import Tuple, List
 from functools import partial
 from tfm.utils._constants import *
 from tfm.parafac_jax import (
@@ -12,26 +12,54 @@ from tfm.parafac_jax import (
     update_factor_fixed_intercept
 )
 
+# @partial(jax.jit, backend=main_compute_device, static_argnums=(2))
+# def update_orthonormal_factor(tensor: jnp.ndarray, factors: List[jnp.ndarray], mode: int, weights: jnp.ndarray) -> jnp.ndarray:
+#     """Update factor matrix with orthogonality constraint using SVD. Orthonormal constraint. """
+#     other_factors = [f for i, f in enumerate(factors) if i != mode]
+#     kr_product = khatri_rao_product(other_factors)
+    
+#     # Weight the Khatri-Rao product
+#     weighted_kr = kr_product * weights[None, :]
+    
+#     # Matricize the tensor
+#     unfolded = matricize(tensor, mode)
+    
+#     # Compute the matrix for SVD
+#     matrix = unfolded @ weighted_kr
+    
+#     # Use SVD to find the orthogonal factor matrix
+#     # U, _, Vh = jnp.linalg.svd(matrix, full_matrices=False)
+#     # updated_factor = U @ Vh
+#     updated_factor, _ = jnp.linalg.qr(matrix)
+#     return updated_factor
+
+
 @partial(jax.jit, backend=main_compute_device, static_argnums=(2))
 def update_orthogonal_factor(tensor: jnp.ndarray, factors: List[jnp.ndarray], mode: int, weights: jnp.ndarray) -> jnp.ndarray:
-    """Update factor matrix with orthogonality constraint using SVD."""
+    """Update factor matrix with orthogonality constraint using:
+       A = XZ' @ (ZX'XZ')^{-0.5}, computed via SVD for GPU efficiency.
+       PARAFAC. Tutorial and applications by Rasmus Bro, Section 4.3"""
+    # Exclude the factor being updated
     other_factors = [f for i, f in enumerate(factors) if i != mode]
-    kr_product = khatri_rao_product(other_factors)
     
-    # Weight the Khatri-Rao product
+    # Compute Khatri-Rao product and apply weights
+    kr_product = khatri_rao_product(other_factors)
     weighted_kr = kr_product * weights[None, :]
     
-    # Matricize the tensor
-    unfolded = matricize(tensor, mode)
-    
-    # Compute the matrix for SVD
-    matrix = unfolded @ weighted_kr
-    
-    # Use SVD to find the orthogonal factor matrix
-    U, _, Vh = jnp.linalg.svd(matrix, full_matrices=False)
-    updated_factor = U @ Vh
-    
+    unfolded = matricize(tensor, mode)  # X in the formula
+    X = unfolded
+    Z = weighted_kr.T
+
+    XZt = X @ Z.T  # Shape: (I_mode, R)
+    ZXXZt = Z @ X.T @ X @ Z.T  # Shape: (R, R)
+
+    U, S, Vh = jnp.linalg.svd(ZXXZt, full_matrices=False, hermitian=True) # check this
+    inv_sqrt = U @ jnp.diag(S**-0.5) @ Vh
+
+    updated_factor = XZt @ inv_sqrt
     return updated_factor
+
+
 
 @partial(jax.jit, backend=main_compute_device, static_argnums=(1, 2, 3, 4, 5, 6))
 def parafac_orthogonal(
@@ -80,7 +108,7 @@ def parafac_orthogonal(
         for mode in range(tensor.ndim):
             # Orthogonal mode - time series factors
             if mode == orthogonal_mode:
-                new_factor = update_orthogonal_factor(tensor, factors, mode, weights)
+                new_factor = update_orthogonal_factor(tensor, factors, mode, weights) 
             # Fixed intercept mode - lag loadings
             elif mode == fixed_intercept_mode:
                 new_factor, one_lag_weights = update_factor_fixed_intercept(tensor, factors, mode, weights)
@@ -117,6 +145,7 @@ def parafac_orthogonal(
     
     return weights, factors
 
+
 @partial(jax.jit, backend=main_compute_device, static_argnums=(2))
 def update_factor(tensor: jnp.ndarray, factors: List[jnp.ndarray], mode: int, weights: jnp.ndarray) -> jnp.ndarray:
     """Update factor matrix using ALS with improved numerical stability."""
@@ -139,4 +168,59 @@ def update_factor(tensor: jnp.ndarray, factors: List[jnp.ndarray], mode: int, we
     
     # Solve the regularized system
     updated_factor = jnp.linalg.solve(gram + reg, rhs.T).T
-    return updated_factor 
+    return updated_factor
+
+# @partial(jax.jit, backend=main_compute_device, static_argnums=(1, 2, 3))
+def orth_als(tensor: jnp.ndarray, rank: int, n_iter_max: int = 100, 
+             random_state: int = 0) -> Tuple[jnp.ndarray, List[jnp.ndarray]]:
+    """Orthogonal-ALS algorithm for tensor decomposition.
+    
+    Args:
+        tensor: Input tensor to decompose
+        rank: Number of components
+        n_iter_max: Maximum number of iterations
+        random_state: Random seed for initialization
+    
+    Returns:
+        weights: Component weights
+        factors: List of factor matrices
+    """
+    # Initialize factors
+    weights, factors = initialize_factors_svd(tensor, rank, random_state)
+
+    def body_fun(carry, _):
+        factors, weights = carry
+    # for i in range(n_iter_max):
+        factors = [jnp.linalg.qr(M)[0] for M in factors]
+        new_factors = []
+        
+        for mode in range(tensor.ndim):
+            other_factors = [f for i, f in enumerate(factors) if i != mode]
+            kr_product = khatri_rao_product(other_factors)
+            
+            # Weight the Khatri-Rao product
+            weighted_kr = kr_product * weights[None, :]
+            
+            # Matricize the tensor
+            unfolded = matricize(tensor, mode)
+            matrix = unfolded @ weighted_kr
+            new_factors.append(matrix)
+
+        # Calculate norms of each factor
+        # norms = [jnp.linalg.norm(f, axis=0) for f in new_factors]
+        # # print(norms)
+        
+        # # Update weights with product of norms
+        # weights = weights * jnp.prod(jnp.stack(norms), axis=0)
+        
+        # # Normalize factors
+        # factors = [
+        #     f / (norm[None, :] + 1e-12)
+        #     for f, norm in zip(factors, norms)
+        # ]
+
+        return (factors, weights), None
+
+    init_carry = (factors, weights)
+    (factors, weights), _ = jax.lax.scan(body_fun, init_carry, None, length=n_iter_max)
+    return weights, factors

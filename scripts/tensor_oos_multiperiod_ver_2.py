@@ -8,7 +8,7 @@ python3 tensor_oos_multiperiod_ver_2.py --dataset=scs --lst_window_size=120 --ls
 python3 tensor_oos_multiperiod_ver_2.py --dataset=scs --lst_window_size=120 --lst_K=1,3,5,10,15,20,25 --lst_lags=36,60,90,120 --max_horizon=36 --max_lag=120 --start='01-2005'
 python3 tensor_oos_multiperiod_ver_2.py --dataset=ff --lst_window_size=120 --lst_K=1,2,3,4,5 --lst_lags=36,60,90,120 --max_horizon=36 --max_lag=120 --start='01-2005'
 python3 tensor_oos_multiperiod_ver_2.py --dataset=toy --lst_window_size=120 --lst_K=1,3,5,10,15,20,25 --lst_lags=36,60,90,120 --max_horizon=36 --max_lag=120 --start='01-2005'
-python3 tensor_oos_multiperiod_ver_2.py --dataset=scs --lst_window_size=120 --lst_K=1,2,3,4,5,10,15,20,25 --lst_lags=36,60,90,120 --max_horizon=36 --max_lag=120
+python3 tensor_oos_multiperiod_ver_2.py --dataset=wrds --lst_window_size=120 --lst_K=1,2,3,4,5,10,15,20,25 --lst_lags=36,60,90,120 --max_horizon=36 --max_lag=120
 ========================================================================================================================
 
 Author: James Zhang
@@ -55,7 +55,7 @@ from collections import defaultdict
 from tqdm import tqdm
 import pickle
 from tfm.utils._load_configs import *
-from tfm.models.tensor import Tensor_Multiperiod_Unmapped_Monthly
+from tfm.models.tensor import Tensor_Multiperiod_Unmapped_Monthly, Tensor_Model_With_RPPCA_Factors
 from tfm.utils._eval import *
 
 # Further parse arguments
@@ -107,16 +107,22 @@ dict_tensor_oos = {
     "Naive": {}, 
     "Hor1": {},
     "Orthogonal": {},
+    "Markowitz": {},
+    "Orthogonal Markowitz": {},
     "W": {lag: defaultdict(dict) for lag in lst_lags}, # for each (lag, K) pair, dim: (T, lag, K)
     "F": {lag: defaultdict(dict) for lag in lst_lags}, # for each (lag, K) pair, dim: (T, window_size, K)
     "B": {lag: defaultdict(dict) for lag in lst_lags}, # for each (lag, K) pair, dim: (T, window_size, K)
-    "MV_TFM": {lag: defaultdict(dict) for lag in lst_lags} # for each (lag, K) pair, dim: (T, max_horizon, K)
+    "MV_TFM": {lag: defaultdict(dict) for lag in lst_lags}, # for each (lag, K) pair, dim: (T, max_horizon, K)
+    "W_ORTHO": {lag: defaultdict(dict) for lag in lst_lags},
+    "F_ORTHO": {lag: defaultdict(dict) for lag in lst_lags},
+    "B_ORTHO": {lag: defaultdict(dict) for lag in lst_lags},
+    "MV_ORTHO": {lag: defaultdict(dict) for lag in lst_lags}
 }
 
 pbar = tqdm(total=len(lst_K) * len(lst_lags))
 for lag in lst_lags:
     print(f"Processing lag = {lag}, Horizon = {max_horizon}")
-    tfm_lst, hor1_lst, naive_lst, ortho_lst = [], [], [], []
+    tfm_lst, hor1_lst, naive_lst, ortho_lst, markowitz_lst, markowitz_ortho_lst = [], [], [], [], [], []
     for K in lst_K: # can i speed this up using jax.lax.scan?
         print(f"Window size = {window_size}, Lag = {lag}, K = {K}")
         # if lag in lag_to_chunk and config == 'wrds':
@@ -139,15 +145,22 @@ for lag in lst_lags:
         #     dict_tensor_oos['B'][lag][K] = jnp.concatenate(B_chunks, axis=0)
         #     dict_tensor_oos['MV_TFM'][lag][K] = jnp.concatenate(mv_chunks, axis=0)
         # else:
-        model, naive, hor1, ortho, W, F, B, mv_tfm = Tensor_Models(X_log[:, :lag, :], jnp.arange(ub), K, window_size, lag, max_horizon, None) # dim: (num_windows, args.max_horizon)
+        model, naive, hor1, ortho, markowitz, markowitz_ortho, W, F, B, mv_tfm, mv_ortho, W_ortho, F_ortho, B_ortho =\
+              Tensor_Models(X_log[:, :lag, :], jnp.arange(ub), K, window_size, lag, max_horizon, None) # dim: (num_windows, args.max_horizon)
         tfm_lst.append(jnp.expand_dims(model, axis=-1))
         naive_lst.append(jnp.expand_dims(naive, axis=-1))
         hor1_lst.append(jnp.expand_dims(hor1, axis=-1))
         ortho_lst.append(jnp.expand_dims(ortho, axis=-1))
+        markowitz_lst.append(jnp.expand_dims(markowitz, axis=-1))
+        markowitz_ortho_lst.append(jnp.expand_dims(markowitz_ortho, axis=-1))
         dict_tensor_oos['W'][lag][K] = W
         dict_tensor_oos['F'][lag][K] = F
         dict_tensor_oos['B'][lag][K] = B
         dict_tensor_oos['MV_TFM'][lag][K] = mv_tfm
+        dict_tensor_oos['W_ORTHO'][lag][K] = W_ortho
+        dict_tensor_oos['F_ORTHO'][lag][K] = F_ortho
+        dict_tensor_oos['B_ORTHO'][lag][K] = B_ortho
+        dict_tensor_oos['MV_ORTHO'][lag][K] = mv_ortho
         pbar.update(1)
 
     # Stores results
@@ -155,6 +168,8 @@ for lag in lst_lags:
     dict_tensor_oos["Naive"][lag] = jnp.concatenate(naive_lst, axis=-1)
     dict_tensor_oos["Hor1"][lag] = jnp.concatenate(hor1_lst, axis=-1)
     dict_tensor_oos["Orthogonal"][lag] = jnp.concatenate(ortho_lst, axis=-1)
+    dict_tensor_oos["Markowitz"][lag] = jnp.concatenate(markowitz_lst, axis=-1)
+    dict_tensor_oos["Orthogonal Markowitz"][lag] = jnp.concatenate(markowitz_ortho_lst, axis=-1)
 
 
 # Output directory
@@ -167,7 +182,7 @@ with open(dir_out + f'saved_dict_tensor_oos_{start_year}.pkl', 'wb') as handle:
     pickle.dump(dict_tensor_oos, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-for method in ["TFM", "Naive", "Hor1", "Orthogonal"]:
+for method in ["TFM", "Naive", "Hor1", "Orthogonal", "Markowitz", "Orthogonal Markowitz"]:
     # Create a figure with two subplots side by side
     fig, axes = plt.subplots(2, 2, figsize=(14, 12))
     fig.suptitle(f'{config.upper()} Multiperiod Results', fontsize=14)

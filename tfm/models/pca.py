@@ -124,14 +124,18 @@ def Pooled_PCA_Multiperiod_Unmapped(X_log: jnp.ndarray,
         mv_pca = jnp.expand_dims(jnp.mean(factors_pca) / jnp.var(factors_pca), axis=-1)
     
     X_next = jax.lax.dynamic_slice(X_log, start_indices=(idx_window + window_size, 0, 0), slice_sizes=(max_horizon, lag, N)).reshape(max_horizon, -1) # dim: max_horizon, N * lag
-    factors_next_pca = X_next @ loadings_pca @ jnp.linalg.inv(loadings_pca.T @ loadings_pca) # dim: (max_horizon, K)
+    factors_next_pca = X_next @ loadings_pca # @ jnp.linalg.inv(loadings_pca.T @ loadings_pca) # dim: (max_horizon, K)
     ret_pca = jnp.cumsum(factors_next_pca @ mv_pca, axis=0)
-    return ret_pca
+    return ret_pca, factors_pca, loadings_pca, mv_pca
 
     
 def RPPCA_One_Window_Jax(X_fit: jnp.ndarray, X_oos: jnp.ndarray, lst_K: List[int], gamma: int = -1):
-    """
-    Generates the results in the one_fit folder    
+    """Generates the results in the one_fit folder  
+
+    Args:
+        X_fit: the in-sample tensor of excess returns  
+        X_oos: the out-of-sample tensor of excess returns
+        lst_K: rank of PCA decomposition
     """
     T_fit, N = X_fit.shape
     T_oos = X_oos.shape[0]

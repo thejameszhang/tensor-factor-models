@@ -56,7 +56,7 @@ def parafac_enhanced(
     tensor: jnp.ndarray,
     rank: int,
     random_state: int = 0,
-    fixed_modes: Optional[List[int]] = None,
+    fixed_modes: Optional[Tuple[int, jnp.array]] = None,
     fix_intercept_mode: int = -1,
     overweight_mode: int = -1,
     gamma: float = 0.0,
@@ -78,7 +78,8 @@ def parafac_enhanced(
     # Handle fixed modes
     modes_list = list(range(tensor.ndim))
     if fixed_modes is not None:
-        modes_list = [m for m in modes_list if m not in fixed_modes]
+        modes_list = [m for m in modes_list if m != fixed_modes[0]]
+        factors[fixed_modes[0]] = fixed_modes[1]
     
     # Apply overweighting if specified
     if overweight_mode != -1:

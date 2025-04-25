@@ -1,0 +1,98 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\graphicspath{ {figures/} }
+\usepackage{array}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\newcommand{\C}{{\mathbb C}}
+\newcommand{\E}{{\mathbb E}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\Prr}{{\mathbb P}}
+\newcommand{\N}{{\mathbb N}}
+\newcommand{\D}{{\mathbb D}}
+\newcommand{\Z}{{\mathbb Z}}
+\usepackage{hyperref}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{note}{Note}[section]
+
+% Redefine the format for figure captions
+\captionsetup[figure]{
+    labelfont={bf},   % Make the label bold (e.g., "Figure 1")
+    labelsep=colon,   % Set the separator after the label (optional, default is a colon)
+}
+
+
+\title{Collection of Results}
+\author{Prof. Serhiy Kozak \& James Zhang}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+% \tableofcontents
+
+% \newpage
+
+All results in this document pertain to the SCS dataset. All 
+window sizes are $120$ months. The out-of-sample start date is January $1$, $2005$. Recall that we study a three-dimensional tensor $\mathcal{R}$ of excess returns ie. returns minus the 
+risk-free rate, where
+\begin{align}
+    \mathcal{R}_{t, l, i} \ \ \ t = 1, \ldots, T, l = 1, \ldots, L, i = 1, \ldots, N,
+\end{align}
+Residuals are defined as differences between returns and the factor model's implied returns. For the tensor model, this is 
+\begin{align}
+    \epsilon_{t, l, i} = \mathcal{R}_{t, l, i} - \sum_{k=1}^K \lambda_k F_{t, k} W_{l, k} B_{i, k}
+\end{align}
+
+NOTE: there is a slight issue with our statistics related to our PCA estimator. We're doing it in a PooledPCA fashion, which we eliminated 
+from the multiperiod section of our results, so this would be inconsistent.
+
+\begin{enumerate}
+    \item In-sample evaluations
+    \begin{itemize}
+        \item Reconstruction error as a function of $K$ and $L$ for unconstrained, orthogonal tensor models 
+        and also as a function of rank for PCA model.
+        \begin{align}
+            \epsilon_{rc} = 1 - \frac{\left\lVert \mathcal{R} - \mathcal{R}_{rc}\right\lVert^2_F}{\left\lVert \mathcal{R}\right\rVert^2_F}
+        \end{align}
+        \item Excess alpha. First we define pricing errors for a single asset across time as 
+        \begin{align}
+            \alpha_{l, i} = \frac{1}{T}\sum_{t=1}^T \epsilon_{t, l, i}
+        \end{align}
+        Then it follows that excess alpha for all assets and lags is 
+        \begin{align}
+            \text{XS-}\alpha = \frac{1}{NL}\sqrt{\sum_{i=1}^N \sum_{l=1}^L \alpha^2_{l, i}}
+        \end{align}
+        \item Similarly, for a single asset, the unexplained variance over time is 
+        \begin{align}
+            \sigma^2_{\epsilon, l, i} = \frac{1}{T} \sum_{t=1}^T \epsilon^2_{t, l, i} - \alpha^2_{l, i}
+        \end{align}
+        It follows that the normalized averaged unexplained variance is 
+        \begin{align}
+            \sigma_{\epsilon} = \sqrt{\frac{1}{NL} \sum_{i=1}^N \sum_{l=1}^L \sigma^2_{\epsilon, l, i}} \Bigg\slash \sqrt{\frac{1}{NL} \sum_{i=1}^N \sum_{l=1}^L \left[\text{Var}_t(\mathcal{R})\right]_{l, i}}
+        \end{align}
+        \item Pricing errors
+        \item Term structure of fitted mean returns for the models?
+    \end{itemize}
+    \item Out-of-sample evals
+    \begin{itemize}
+        \item Reconstruction errors
+        \item Excess alphas
+        \item Normalized unepxlained variances
+    \end{itemize}
+    \item Multiperiod results - unconstrained TFM, Naive, Hor1, Orthogonal, PCA, and RP-PCA (note to self: make the axis the same for all plots in this 2x3)
+    \item Tensor model visualizations and economic content
+\end{enumerate}
+
+\end{document}
